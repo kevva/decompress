@@ -25,6 +25,7 @@ function Decompress() {
 
 Decompress.prototype.extract = function (opts) {
     opts = opts || {};
+    opts.path = opts.path || process.cwd();
     var extractor = this._getExtractor(opts.type);
 
     if (!fs.existsSync(opts.path)) {

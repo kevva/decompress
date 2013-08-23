@@ -24,7 +24,7 @@ fs.createReadStream('foo.tar.gz')
 
 ### decompress.extract(opts)
 
-Extract an archive using the `type` option to determine which extractor to use.
+Extract an archive using the `type` option to determine which extractor to use. If no `path` is specified it'll extract it to your current location.
 
 ### decompress.canExtract(src, mime)
 
@@ -42,7 +42,8 @@ decompress.canExtract('application/zip');
 ## Options
 
 * `type` — String that can be a file name, URL or a MIME type for example.
-* `path` — Path to extract the archive to.
+* `path` — Path to extract the archive to. If no `path` is specified it'll 
+extract it to your current location.
 
 You can also define options accepted by the different extractors. See [unzip](https://github.com/nearinfinity/node-unzip/) and [tar](https://github.com/isaacs/node-tar/)
 for more information.
