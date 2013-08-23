@@ -1,11 +1,10 @@
-/*global describe, it, afterEach */
+/*global describe, it, before, afterEach */
 'use strict';
 
 var fs = require('fs');
 var path = require('path');
 var assert = require('assert');
 var decompress = require('../decompress');
-var tmp = path.join(__dirname, 'tmp');
 
 describe('decompress.canExtract()', function () {
     it('can extract .zip', function () {
@@ -23,24 +22,31 @@ describe('decompress.canExtract()', function () {
 });
 
 describe('decompress.extract()', function () {
+    before(function () {
+        this.tmp = path.join(__dirname, 'tmp');
+    });
     afterEach(function () {
-        if (fs.existsSync(path.join(tmp, 'test.jpg'))) {
-            fs.unlinkSync(path.join(tmp, 'test.jpg'));
+        if (fs.existsSync(path.join(this.tmp, 'test.jpg'))) {
+            fs.unlinkSync(path.join(this.tmp, 'test.jpg'));
         }
-        fs.rmdirSync(tmp);
+        fs.rmdirSync(this.tmp);
     });
     it('should extract .zip', function (cb) {
-        fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'))
-        .pipe(decompress.extract({ type: '.zip', path: tmp }))
+        var self = this;
+        var file = fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'));
+
+        file.pipe(decompress.extract({ type: '.zip', path: this.tmp }))
         .on('close', function () {
-            fs.stat(path.join(tmp, 'test.jpg'), cb);
+            fs.stat(path.join(self.tmp, 'test.jpg'), cb);
         });
     });
     it('should extract .tar', function (cb) {
-        fs.createReadStream(path.join(__dirname, 'fixtures/test.tar'))
-        .pipe(decompress.extract({ type: '.tar', path: tmp }))
+        var self = this;
+        var file = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar'));
+
+        file.pipe(decompress.extract({ type: '.tar', path: this.tmp }))
         .on('close', function () {
-            fs.stat(path.join(tmp, 'test.jpg'), cb);
+            fs.stat(path.join(self.tmp, 'test.jpg'), cb);
         });
     });
 });

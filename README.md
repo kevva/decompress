@@ -1,6 +1,6 @@
 # decompress [![Build Status](https://secure.travis-ci.org/kevva/decompress.png?branch=master)](http://travis-ci.org/kevva/decompress)
 
-Easily extract `.zip`, `.tar` and `.tar.gz` archives. Based on the extract
+Easily extract `.zip`, `.tar` and `.tar.gz` archives. Based on the extract 
 utility in [Bower](https://github.com/bower/bower).
 
 ## Getting started
@@ -9,7 +9,7 @@ Install with [npm](https://npmjs.org/package/decompress): `npm install decompres
 
 ## Examples
 
-You'll only need to give decompress a `type` and it'll figure the rest out for
+You'll only need to give decompress a `type` and it'll figure the rest out for 
 you.
 
 ```js
@@ -24,11 +24,12 @@ fs.createReadStream('foo.tar.gz')
 
 ### decompress.extract(opts)
 
-Extract an archive using the `type` option to determine which extractor to use. If no `path` is specified it'll extract it to your current location.
+Extract an archive using the `type` option to determine which extractor to use. 
+If no `path` is specified it'll extract it to your current location.
 
 ### decompress.canExtract(src, mime)
 
-Determine if a file can be extracted or not by checking the file extension
+Determine if a file can be extracted or not by checking the file extension 
 and/or the MIME type.
 
 ```js
@@ -45,7 +46,7 @@ decompress.canExtract('application/zip');
 * `path` — Path to extract the archive to. If no `path` is specified it'll 
 extract it to your current location.
 
-You can also define options accepted by the different extractors. See [unzip](https://github.com/nearinfinity/node-unzip/) and [tar](https://github.com/isaacs/node-tar/)
+You can also define options accepted by the different extractors. See [unzip](https://github.com/nearinfinity/node-unzip/) and [tar](https://github.com/isaacs/node-tar/) 
 for more information.
 
 ## License
