@@ -9,22 +9,24 @@ Install with [npm](https://npmjs.org/package/decompress): `npm install decompres
 
 ## Examples
 
-You'll only need to give decompress a `type` and it'll figure the rest out for 
+You'll only need to pass a type into `ext` and it'll figure the rest out for 
 you.
 
 ```js
 var decompress = require('decompress');
 var fs = require('fs');
 
-fs.createReadStream('foo.tar.gz')
-.pipe(decompress.extract({ type: '.tar.gz', path: 'bar' }));
+var src = fs.createReadStream('foo.tar.gz');
+var dest = decompress.extract({ ext: '.tar.gz' });
+
+src.pipe(dest);
 ```
 
 ## API
 
 ### decompress.extract(opts)
 
-Extract an archive using the `type` option to determine which extractor to use. 
+Extract an archive using the `ext` option to determine which extractor to use. 
 If no `path` is specified it'll extract it to your current location.
 
 ### decompress.canExtract(src, mime)
@@ -42,8 +44,8 @@ decompress.canExtract('application/zip');
 
 ## Options
 
-* `type` — String that can be a file name, URL or a MIME type for example.
-* `path` — Path to extract the archive to. If no `path` is specified it'll 
+* `ext` — String that can be a file name, URL, MIME type etc.
+* `path` — Path to extract the archive to. If no `path` is defined it'll 
 extract it to your current location.
 
 You can also define options accepted by the different extractors. See [unzip](https://github.com/nearinfinity/node-unzip/) and [tar](https://github.com/isaacs/node-tar/) 

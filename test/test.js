@@ -1,10 +1,11 @@
-/*global describe, it, before, afterEach */
+/*global describe, it */
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
 var assert = require('assert');
 var decompress = require('../decompress');
+var fs = require('fs');
+var path = require('path');
+var rm = require('rimraf');
 
 describe('decompress.canExtract()', function () {
     it('can extract .zip', function () {
@@ -13,40 +14,49 @@ describe('decompress.canExtract()', function () {
     it('can extract application/zip', function () {
         assert.equal(decompress.canExtract('application/zip'), true);
     });
-    it('can\'t extract .rar', function () {
+    it('cannot extract .rar', function () {
         assert.equal(decompress.canExtract('.rar'), false);
     });
-    it('can\'t extract application/x-rar-compressed', function () {
+    it('cannot extract application/x-rar-compressed', function () {
         assert.equal(decompress.canExtract('application/x-rar-compressed'), false);
     });
 });
 
 describe('decompress.extract()', function () {
-    before(function () {
-        this.tmp = path.join(__dirname, 'tmp');
-    });
-    afterEach(function () {
-        if (fs.existsSync(path.join(this.tmp, 'test.jpg'))) {
-            fs.unlinkSync(path.join(this.tmp, 'test.jpg'));
-        }
-        fs.rmdirSync(this.tmp);
-    });
     it('should extract .zip', function (cb) {
-        var self = this;
-        var file = fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'));
+        var tmp = path.join(__dirname, 'tmp');
+        var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'));
+        var dest = decompress.extract({ ext: '.zip', path: tmp });
 
-        file.pipe(decompress.extract({ type: '.zip', path: this.tmp }))
-        .on('close', function () {
-            fs.stat(path.join(self.tmp, 'test.jpg'), cb);
+        src.pipe(dest);
+
+        dest.once('close', function () {
+            fs.statSync(path.join(tmp, 'test.jpg'));
+            rm(tmp, cb);
         });
     });
     it('should extract .tar', function (cb) {
-        var self = this;
-        var file = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar'));
+        var tmp = path.join(__dirname, 'tmp');
+        var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar'));
+        var dest = decompress.extract({ ext: '.tar', path: tmp });
 
-        file.pipe(decompress.extract({ type: '.tar', path: this.tmp }))
-        .on('close', function () {
-            fs.stat(path.join(self.tmp, 'test.jpg'), cb);
+        src.pipe(dest);
+
+        dest.once('close', function () {
+            fs.statSync(path.join(tmp, 'test.jpg'));
+            rm(tmp, cb);
+        });
+    });
+    it('should extract .tar.gz', function (cb) {
+        var tmp = path.join(__dirname, 'tmp');
+        var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar.gz'));
+        var dest = decompress.extract({ ext: '.tar.gz', path: tmp });
+
+        src.pipe(dest);
+
+        dest.once('close', function () {
+            fs.statSync(path.join(tmp, 'test.jpg'));
+            rm(tmp, cb);
         });
     });
 });
