@@ -1,6 +1,6 @@
 {
   "name": "decompress",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Easily extract zip, tar and tar.gz archives",
   "keywords": [
     "extract",
