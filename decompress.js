@@ -1,11 +1,14 @@
 'use strict';
 
+var AdmZip = require('adm-zip');
 var fs = require('fs');
 var mkdir = require('mkdirp');
 var mout = require('mout');
+var path = require('path');
 var pipeline = require('stream-combiner');
+var rm = require('rimraf');
 var tar = require('tar');
-var unzip = require('unzip');
+var temp = require('temp');
 var zlib = require('zlib');
 
 /**
@@ -22,9 +25,11 @@ var zlib = require('zlib');
 
 function Decompress(opts) {
     opts = opts || {};
+    opts.strip = opts.strip || 0;
     this.opts = opts;
     this.path = opts.path || process.cwd();
     this.ext = opts.ext || '';
+    this.strip = opts.strip >= 0 ? opts.strip : 0;
     this.extractors = {
         '.zip': this._extractZip,
         '.tar': this._extractTar,
@@ -99,8 +104,25 @@ Decompress.prototype._getExtractor = function (src) {
  */
 
 Decompress.prototype._extractZip = function () {
-    var stream = unzip.Extract(this.opts);
-    return stream;
+    var self = this;
+    var tempFile = temp.path({ suffix: '.zip' });
+    var stream = fs.createWriteStream(tempFile).on('close', function () {
+        var zip = new AdmZip(tempFile);
+        var zipEntries = zip.getEntries();
+        var destFile;
+
+        zipEntries.forEach(function (entry) {
+            destFile = entry.entryName.toString().split('/').slice(self.strip).join('/');
+
+            if (destFile || destFile.length) {
+                zip.extractEntryTo(entry.entryName.toString(), path.join(self.path, destFile), true, true);
+            }
+        });
+    });
+
+    return stream.on('close', function () {
+        rm.sync(tempFile);
+    });
 };
 
 /**
