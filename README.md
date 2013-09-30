@@ -24,12 +24,12 @@ src.pipe(dest);
 
 ## API
 
-### decompress.extract(opts)
+### .extract(opts)
 
 Extract an archive using the `ext` option to determine which extractor to use. 
 If no `path` is specified it'll extract it to your current location.
 
-### decompress.canExtract(src, mime)
+### .canExtract(src, mime)
 
 Determine if a file can be extracted or not by checking the file extension 
 and/or the MIME type.
@@ -47,6 +47,7 @@ decompress.canExtract('application/zip');
 * `ext` — String that can be a file name, URL, MIME type etc.
 * `path` — Path to extract the archive to. If no `path` is defined it'll 
 extract it to your current location.
+* `strip` — Equivalent to `--strip-components` for tar.
 
 You can also define options accepted by the different extractors. See [unzip](https://github.com/nearinfinity/node-unzip/) and [tar](https://github.com/isaacs/node-tar/) 
 for more information.
