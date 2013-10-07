@@ -49,9 +49,6 @@ decompress.canExtract('application/zip');
 extract it to your current location.
 * `strip` — Equivalent to `--strip-components` for tar.
 
-You can also define options accepted by the different extractors. See [unzip](https://github.com/nearinfinity/node-unzip/) and [tar](https://github.com/isaacs/node-tar/) 
-for more information.
-
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License) (c) [Kevin Mårtensson](http://kevinmartensson.com)
