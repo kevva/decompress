@@ -59,4 +59,16 @@ describe('decompress.extract()', function () {
             rm(tmp, cb);
         });
     });
+    it('should extract .zip with strip option', function (cb) {
+        var tmp = path.join(__dirname, 'tmp');
+        var src = fs.createReadStream(path.join(__dirname, 'fixtures/test-strip.zip'));
+        var dest = decompress.extract({ ext: '.zip', path: tmp, strip: '1' });
+
+        src.pipe(dest);
+
+        dest.once('close', function () {
+            fs.statSync(path.join(tmp, 'test-strip.jpg'));
+            rm(tmp, cb);
+        });
+    });
 });
