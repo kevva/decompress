@@ -109,13 +109,13 @@ Decompress.prototype._extractZip = function () {
     var stream = fs.createWriteStream(tempFile).on('close', function () {
         var zip = new AdmZip(tempFile);
         var zipEntries = zip.getEntries();
-        var destFile;
 
         zipEntries.forEach(function (entry) {
-            destFile = entry.entryName.toString().split('/').slice(self.strip).join('/');
+            var destFile = entry.entryName.toString().split('/').slice(self.strip).join('/');
+            var destDir = path.dirname(destFile);
 
             if (destFile || destFile.length) {
-                zip.extractEntryTo(entry.entryName.toString(), path.join(self.path, destFile), true, true);
+                zip.extractEntryTo(entry.entryName.toString(), path.join(self.path, destDir), false, true);
             }
         });
     });
