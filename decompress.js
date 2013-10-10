@@ -2,7 +2,6 @@
 
 var AdmZip = require('adm-zip');
 var fs = require('fs');
-var fstream = require('fstream');
 var mkdir = require('mkdirp');
 var mout = require('mout');
 var path = require('path');
@@ -118,7 +117,8 @@ Decompress.prototype._extractZip = function () {
             var c = entry.getData().toString();
 
             if (!entry.isDirectory) {
-                fstream.Writer({ path: d }).write(c);
+                mkdir.sync(path.dirname(d));
+                fs.writeFileSync(d, c);
             }
         });
     });
