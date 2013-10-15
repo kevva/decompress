@@ -112,7 +112,9 @@ Decompress.prototype._extractZip = function () {
         var zipEntries = zip.getEntries();
 
         zipEntries.forEach(function (entry) {
-            var e = entry.entryName.toString().split('/').slice(self.strip).join('/');
+            var ef = path.basename(entry.entryName.toString());
+            var ed = path.dirname(entry.entryName.toString().split('/').slice(self.strip).join('/'));
+            var e = path.join(ed, ef);
             var d = path.join(self.path, e);
             var c = entry.getData().toString();
 
