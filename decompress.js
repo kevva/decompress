@@ -3,7 +3,8 @@
 var AdmZip = require('adm-zip');
 var fs = require('fs');
 var mkdir = require('mkdirp');
-var mout = require('mout');
+var find = require('mout/array/find');
+var endsWith = require('mout/string/endsWith');
 var path = require('path');
 var pipeline = require('stream-combiner');
 var rm = require('rimraf');
@@ -90,8 +91,8 @@ Decompress.prototype.canExtract = function (src, mime) {
 Decompress.prototype._getExtractor = function (src) {
     src = src.toLowerCase();
 
-    var ext = mout.array.find(this.extractorTypes, function (ext) {
-        return mout.string.endsWith(src, ext);
+    var ext = find(this.extractorTypes, function (ext) {
+        return endsWith(src, ext);
     });
 
     return ext ? this.extractors[ext] : null;
