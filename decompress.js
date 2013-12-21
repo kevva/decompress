@@ -1,10 +1,10 @@
 'use strict';
 
 var AdmZip = require('adm-zip');
+var endsWith = require('mout/string/endsWith');
+var find = require('mout/array/find');
 var fs = require('fs');
 var mkdir = require('mkdirp');
-var find = require('mout/array/find');
-var endsWith = require('mout/string/endsWith');
 var path = require('path');
 var pipeline = require('stream-combiner');
 var rm = require('rimraf');
