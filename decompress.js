@@ -117,11 +117,10 @@ Decompress.prototype._extractZip = function () {
             var ed = path.dirname(entry.entryName.toString().split('/').slice(self.strip).join('/'));
             var e = path.join(ed, ef);
             var d = path.join(self.path, e);
-            var c = entry.getData().toString();
 
             if (!entry.isDirectory) {
                 mkdir.sync(path.dirname(d));
-                fs.writeFileSync(d, c);
+                fs.writeFileSync(d, entry.getData());
             }
         });
     });
