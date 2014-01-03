@@ -113,12 +113,11 @@ Decompress.prototype._extractZip = function () {
         var zipEntries = zip.getEntries();
 
         zipEntries.forEach(function (entry) {
-            var ef = path.basename(entry.entryName.toString());
-            var ed = path.dirname(entry.entryName.toString().split('/').slice(self.strip).join('/'));
-            var e = path.join(ed, ef);
-            var d = path.join(self.path, e);
-
             if (!entry.isDirectory) {
+                var ef = path.basename(entry.entryName.toString());
+                var ed = path.dirname(entry.entryName.toString().split('/').slice(self.strip).join('/'));
+                var d = path.join(self.path, ed, ef);
+
                 mkdir.sync(path.dirname(d));
                 fs.writeFileSync(d, entry.getData());
             }
