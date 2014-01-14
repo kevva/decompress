@@ -9,7 +9,7 @@ var path = require('path');
 var pipeline = require('stream-combiner');
 var rm = require('rimraf');
 var tar = require('tar');
-var temp = require('temp');
+var tempfile = require('tempfile');
 var zlib = require('zlib');
 
 /**
@@ -106,7 +106,7 @@ Decompress.prototype._getExtractor = function (src) {
 
 Decompress.prototype._extractZip = function () {
     var self = this;
-    var tmp = temp.path({ suffix: '.zip' });
+    var tmp = tempfile('.zip');
 
     var stream = fs.createWriteStream(tmp).on('close', function () {
         var zip = new AdmZip(tmp);
