@@ -11,12 +11,15 @@ describe('decompress.canExtract()', function () {
     it('can extract .zip', function () {
         assert.equal(decompress.canExtract('.zip'), true);
     });
+
     it('can extract application/zip', function () {
         assert.equal(decompress.canExtract('application/zip'), true);
     });
+
     it('cannot extract .rar', function () {
         assert.equal(decompress.canExtract('.rar'), false);
     });
+
     it('cannot extract application/x-rar-compressed', function () {
         assert.equal(decompress.canExtract('application/x-rar-compressed'), false);
     });
@@ -35,6 +38,7 @@ describe('decompress.extract()', function () {
             rm(tmp, cb);
         });
     });
+
     it('should extract .tar', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar'));
@@ -47,6 +51,7 @@ describe('decompress.extract()', function () {
             rm(tmp, cb);
         });
     });
+
     it('should extract .tar.gz', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar.gz'));
@@ -59,6 +64,7 @@ describe('decompress.extract()', function () {
             rm(tmp, cb);
         });
     });
+
     it('should extract .zip with strip option', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test-strip.zip'));
