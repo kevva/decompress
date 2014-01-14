@@ -44,10 +44,27 @@ decompress.canExtract('application/zip');
 
 ## Options
 
-* `ext` — String that can be a file name, URL, MIME type etc.
-* `path` — Path to extract the archive to. If no `path` is defined it'll 
-extract it to your current location.
-* `strip` — Equivalent to `--strip-components` for tar.
+### `ext`
+
+Type: `String`  
+Default: `''`
+
+String that can be a file name, URL, MIME type etc.
+
+### `path`
+
+Type: `String`  
+Default: `process.cwd()`
+
+Path to extract the archive to. If no `path` is defined it'll extract it to your 
+current location.
+
+### strip
+
+Type: `Number`  
+Default: `0`
+
+Equivalent to `--strip-components` for tar.
 
 ## License
 
