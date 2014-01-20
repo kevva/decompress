@@ -1,4 +1,4 @@
-/*global describe, it */
+/*global afterEach, describe, it */
 'use strict';
 
 var assert = require('assert');
@@ -26,6 +26,10 @@ describe('decompress.canExtract()', function () {
 });
 
 describe('decompress.extract()', function () {
+    afterEach(function (cb) {
+        rm(path.join(__dirname, 'tmp'), cb);
+    });
+
     it('should extract .zip', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'));
@@ -34,8 +38,7 @@ describe('decompress.extract()', function () {
         src.pipe(dest);
 
         dest.once('close', function () {
-            fs.statSync(path.join(tmp, 'test.jpg'));
-            rm(tmp, cb);
+            cb(assert.ok(fs.existsSync(path.join(tmp, 'test.jpg'))));
         });
     });
 
@@ -47,8 +50,7 @@ describe('decompress.extract()', function () {
         src.pipe(dest);
 
         dest.once('close', function () {
-            fs.statSync(path.join(tmp, 'test.jpg'));
-            rm(tmp, cb);
+            cb(assert.ok(fs.existsSync(path.join(tmp, 'test.jpg'))));
         });
     });
 
@@ -60,8 +62,7 @@ describe('decompress.extract()', function () {
         src.pipe(dest);
 
         dest.once('close', function () {
-            fs.statSync(path.join(tmp, 'test.jpg'));
-            rm(tmp, cb);
+            cb(assert.ok(fs.existsSync(path.join(tmp, 'test.jpg'))));
         });
     });
 
@@ -73,8 +74,7 @@ describe('decompress.extract()', function () {
         src.pipe(dest);
 
         dest.once('close', function () {
-            fs.statSync(path.join(tmp, 'test-strip.jpg'));
-            rm(tmp, cb);
+            cb(assert.ok(fs.existsSync(path.join(tmp, 'test-strip.jpg'))));
         });
     });
 });
