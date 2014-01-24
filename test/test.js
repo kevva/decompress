@@ -2,7 +2,7 @@
 'use strict';
 
 var assert = require('assert');
-var decompress = require('../decompress');
+var decompress = require('../');
 var fs = require('fs');
 var path = require('path');
 var rm = require('rimraf');

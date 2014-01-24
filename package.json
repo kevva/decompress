@@ -20,9 +20,9 @@
   "scripts": {
     "test": "mocha --reporter list"
   },
-  "main": "decompress.js",
+  "main": "index.js",
   "files": [
-    "decompress.js"
+    "index.js"
   ],
   "dependencies": {
     "adm-zip": "~0.4.3",
