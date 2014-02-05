@@ -26,11 +26,10 @@ var zlib = require('zlib');
 
 function Decompress(opts) {
     opts = opts || {};
-    opts.strip = opts.strip || 0;
     this.opts = opts;
     this.path = opts.path || process.cwd();
     this.ext = opts.ext || '';
-    this.strip = opts.strip >= 0 ? opts.strip : 0;
+    this.strip = +opts.strip || 0;
     this.extractors = {
         '.zip': this._extractZip,
         '.tar': this._extractTar,
@@ -105,28 +104,35 @@ Decompress.prototype._getExtractor = function (src) {
  */
 
 Decompress.prototype._extractZip = function () {
-    var self = this;
     var tmp = tempfile('.zip');
+    var self = this;
+    var stream = fs.createWriteStream(tmp);
+    var zip;
 
-    var stream = fs.createWriteStream(tmp).on('close', function () {
-        var zip = new AdmZip(tmp);
-        var zipEntries = zip.getEntries();
+    stream.on('close', function () {
+        zip = new AdmZip(tmp);
 
-        zipEntries.forEach(function (entry) {
+        zip.getEntries().forEach(function (entry) {
             if (!entry.isDirectory) {
-                var entryFile = path.basename(entry.entryName.toString());
-                var entryDir = path.dirname(entry.entryName.toString().split('/').slice(self.strip).join('/'));
-                var dest = path.join(self.path, entryDir, entryFile);
+                var dest;
+                var dir = path.dirname(entry.entryName.toString()).split(path.sep);
+                var file = path.basename(entry.rawEntryName.toString());
+
+                if (self.strip) {
+                    dir = dir.slice(self.strip);
+                }
+
+                dest = path.join(self.path, dir.join(path.sep), file);
 
                 mkdir.sync(path.dirname(dest));
                 fs.writeFileSync(dest, entry.getData());
             }
         });
-    });
 
-    return stream.on('close', function () {
         rm.sync(tmp);
     });
+
+    return stream;
 };
 
 /**

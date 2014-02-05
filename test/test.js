@@ -8,20 +8,20 @@ var path = require('path');
 var rm = require('rimraf');
 
 describe('decompress.canExtract()', function () {
-    it('can extract .zip', function () {
-        assert.equal(decompress.canExtract('.zip'), true);
+    it('can extract .zip', function (cb) {
+        cb(assert.equal(decompress.canExtract('.zip'), true));
     });
 
-    it('can extract application/zip', function () {
-        assert.equal(decompress.canExtract('application/zip'), true);
+    it('can extract application/zip', function (cb) {
+        cb(assert.equal(decompress.canExtract('application/zip'), true));
     });
 
-    it('cannot extract .rar', function () {
-        assert.equal(decompress.canExtract('.rar'), false);
+    it('cannot extract .rar', function (cb) {
+        cb(assert.equal(decompress.canExtract('.rar'), false));
     });
 
-    it('cannot extract application/x-rar-compressed', function () {
-        assert.equal(decompress.canExtract('application/x-rar-compressed'), false);
+    it('cannot extract application/x-rar-compressed', function (cb) {
+        cb(assert.equal(decompress.canExtract('application/x-rar-compressed'), false));
     });
 });
 
@@ -37,7 +37,7 @@ describe('decompress.extract()', function () {
 
         src.pipe(dest);
 
-        dest.once('close', function () {
+        dest.on('close', function () {
             cb(assert.ok(fs.existsSync(path.join(tmp, 'test.jpg'))));
         });
     });
@@ -49,7 +49,7 @@ describe('decompress.extract()', function () {
 
         src.pipe(dest);
 
-        dest.once('close', function () {
+        dest.on('close', function () {
             cb(assert.ok(fs.existsSync(path.join(tmp, 'test.jpg'))));
         });
     });
@@ -61,7 +61,7 @@ describe('decompress.extract()', function () {
 
         src.pipe(dest);
 
-        dest.once('close', function () {
+        dest.on('close', function () {
             cb(assert.ok(fs.existsSync(path.join(tmp, 'test.jpg'))));
         });
     });
@@ -73,7 +73,7 @@ describe('decompress.extract()', function () {
 
         src.pipe(dest);
 
-        dest.once('close', function () {
+        dest.on('close', function () {
             cb(assert.ok(fs.existsSync(path.join(tmp, 'test-strip.jpg'))));
         });
     });
