@@ -17,19 +17,19 @@ var decompress = require('decompress');
 var fs = require('fs');
 
 var src = fs.createReadStream('foo.tar.gz');
-var dest = decompress.extract({ ext: '.tar.gz' });
+var dest = decompress({ ext: '.tar.gz' });
 
 src.pipe(dest);
 ```
 
 ## API
 
-### .extract(opts)
+### decompress(opts)
 
 Extract an archive using the `ext` option to determine which extractor to use. 
 If no `path` is specified it'll extract it to your current location.
 
-### .canExtract(src, mime)
+### decompress.canExtract(src, mime)
 
 Determine if a file can be extracted or not by checking the file extension 
 and/or the MIME type.

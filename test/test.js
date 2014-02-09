@@ -33,7 +33,7 @@ describe('decompress.extract()', function () {
     it('should extract .zip', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'));
-        var dest = decompress.extract({ ext: '.zip', path: tmp });
+        var dest = decompress({ ext: '.zip', path: tmp });
 
         src.pipe(dest);
 
@@ -45,7 +45,7 @@ describe('decompress.extract()', function () {
     it('should extract .tar', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar'));
-        var dest = decompress.extract({ ext: '.tar', path: tmp });
+        var dest = decompress({ ext: '.tar', path: tmp });
 
         src.pipe(dest);
 
@@ -57,7 +57,7 @@ describe('decompress.extract()', function () {
     it('should extract .tar.gz', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.tar.gz'));
-        var dest = decompress.extract({ ext: '.tar.gz', path: tmp });
+        var dest = decompress({ ext: '.tar.gz', path: tmp });
 
         src.pipe(dest);
 
@@ -69,7 +69,7 @@ describe('decompress.extract()', function () {
     it('should extract .zip with strip option', function (cb) {
         var tmp = path.join(__dirname, 'tmp');
         var src = fs.createReadStream(path.join(__dirname, 'fixtures/test-strip.zip'));
-        var dest = decompress.extract({ ext: '.zip', path: tmp, strip: '1' });
+        var dest = decompress({ ext: '.zip', path: tmp, strip: '1' });
 
         src.pipe(dest);
 

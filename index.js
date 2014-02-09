@@ -163,6 +163,11 @@ Decompress.prototype._extractTarGz = function () {
  * Module exports
  */
 
+module.exports = function (opts) {
+    var decompress = new Decompress(opts);
+    return decompress.extract();
+};
+
 module.exports.extract = function (opts) {
     var decompress = new Decompress(opts);
     return decompress.extract();
