@@ -1,6 +1,5 @@
 'use strict';
 
-var AdmZip = require('adm-zip');
 var endsWith = require('mout/string/endsWith');
 var find = require('mout/array/find');
 var fs = require('fs');
@@ -8,9 +7,7 @@ var mkdir = require('mkdirp');
 var path = require('path');
 var pipeline = require('stream-combiner');
 var rm = require('rimraf');
-var tar = require('tar');
 var tempfile = require('tempfile');
-var zlib = require('zlib');
 
 /**
  * Initialize Decompress with options
@@ -104,6 +101,7 @@ Decompress.prototype._getExtractor = function (src) {
  */
 
 Decompress.prototype._extractZip = function () {
+    var AdmZip = require('adm-zip');
     var tmp = tempfile('.zip');
     var self = this;
     var stream = fs.createWriteStream(tmp);
@@ -142,7 +140,9 @@ Decompress.prototype._extractZip = function () {
  */
 
 Decompress.prototype._extractTar = function () {
+    var tar = require('tar');
     var stream = tar.Extract(this.opts);
+
     return stream;
 };
 
@@ -153,6 +153,8 @@ Decompress.prototype._extractTar = function () {
  */
 
 Decompress.prototype._extractTarGz = function () {
+    var tar = require('tar');
+    var zlib = require('zlib');
     var stream = zlib.Unzip();
     var dest = tar.Extract(this.opts);
 
