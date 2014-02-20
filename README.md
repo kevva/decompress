@@ -59,7 +59,7 @@ Default: `process.cwd()`
 Path to extract the archive to. If no `path` is defined it'll extract it to your 
 current location.
 
-### strip
+### `strip`
 
 Type: `Number`  
 Default: `0`
