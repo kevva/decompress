@@ -16,6 +16,7 @@ var tempfile = require('tempfile');
  *
  *   - `ext` String with file name, MIME type, etc
  *   - `path` Path to extract to
+ *   - `strip` Equivalent to --strip-components for tar
  *
  * @param {Object} opts
  * @api private
