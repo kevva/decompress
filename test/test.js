@@ -77,4 +77,16 @@ describe('decompress.extract()', function () {
             cb(assert.ok(fs.existsSync(path.join(tmp, 'test-strip.jpg'))));
         });
     });
+
+    it('should extract .zip with and set mode 0777', function (cb) {
+        var tmp = path.join(__dirname, 'tmp');
+        var src = fs.createReadStream(path.join(__dirname, 'fixtures/test.zip'));
+        var dest = decompress({ ext: '.zip', path: tmp, mode: '0777' });
+
+        src.pipe(dest);
+
+        dest.on('close', function () {
+            cb(assert.equal(fs.statSync(path.join(tmp, 'test.jpg')).mode.toString(8), 100755));
+        });
+    });
 });
