@@ -124,7 +124,11 @@ Decompress.prototype._extractZip = function () {
                 dest = path.join(self.path, dir.join(path.sep), file);
 
                 mkdir.sync(path.dirname(dest));
-                fs.writeFileSync(dest, entry.getData(), { mode: self.opts.mode || 438 });
+                fs.writeFileSync(dest, entry.getData());
+
+                if (self.opts.mode) {
+                    fs.chmodSync(dest, self.opts.mode);
+                }
             }
         });
 
