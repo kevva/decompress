@@ -1,8 +1,7 @@
 'use strict';
 
-var endsWith = require('mout/string/endsWith');
-var find = require('mout/array/find');
 var fs = require('fs');
+var mapKey = require('map-key');
 var mkdir = require('mkdirp');
 var path = require('path');
 var pipeline = require('stream-combiner');
@@ -37,7 +36,6 @@ function Decompress(opts) {
         'application/x-tar': this._extractTar,
         'application/x-tgz': this._extractTarGz
     };
-    this.extractorTypes = Object.keys(this.extractors);
     this.extractor = this._getExtractor(this.ext);
 }
 
@@ -87,12 +85,7 @@ Decompress.prototype.canExtract = function (src, mime) {
 
 Decompress.prototype._getExtractor = function (src) {
     src = src.toLowerCase();
-
-    var ext = find(this.extractorTypes, function (ext) {
-        return endsWith(src, ext);
-    });
-
-    return ext ? this.extractors[ext] : null;
+    return mapKey.endsWith(this.extractors, src);
 };
 
 /**

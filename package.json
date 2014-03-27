@@ -25,13 +25,13 @@
     "index.js"
   ],
   "dependencies": {
-    "adm-zip": "~0.4.3",
-    "mkdirp": "~0.3.5",
-    "mout": "~0.9.0",
-    "rimraf": "~2.2.2",
-    "stream-combiner": "~0.0.2",
-    "tar": "~0.1.18",
-    "tempfile": "~0.1.2"
+    "adm-zip": "^0.4.3",
+    "mkdirp": "^0.3.5",
+    "rimraf": "^2.2.2",
+    "stream-combiner": "^0.0.2",
+    "tar": "^0.1.18",
+    "tempfile": "^0.1.2",
+    "map-key": "^0.1.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1"
