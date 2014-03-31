@@ -25,7 +25,7 @@ describe('decompress.canExtract()', function () {
     });
 });
 
-describe('decompress.extract()', function () {
+describe('decompress()', function () {
     afterEach(function (cb) {
         rm(path.join(__dirname, 'tmp'), cb);
     });

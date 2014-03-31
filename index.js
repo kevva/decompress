@@ -170,6 +170,7 @@ module.exports = function (opts) {
 
 module.exports.extract = function (opts) {
     var decompress = new Decompress(opts);
+    console.log('decompress.extract() is deprecated, use decompress() instead');
     return decompress.extract();
 };
 
