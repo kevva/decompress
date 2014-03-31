@@ -33,6 +33,7 @@ function Decompress(opts) {
         '.tar.gz': this._extractTarGz,
         '.tgz': this._extractTarGz,
         'application/zip': this._extractZip,
+        'application/x-gzip': this._extractTarGz,
         'application/x-tar': this._extractTar,
         'application/x-tgz': this._extractTarGz
     };
