@@ -1,7 +1,7 @@
 'use strict';
 
 var fs = require('fs');
-var mapKey = require('map-key');
+var map = require('map-key');
 var mkdir = require('mkdirp');
 var path = require('path');
 var pipeline = require('stream-combiner');
@@ -86,7 +86,7 @@ Decompress.prototype.canExtract = function (src, mime) {
 
 Decompress.prototype._getExtractor = function (src) {
     src = src.toLowerCase();
-    return mapKey.endsWith(this.extractors, src);
+    return map(this.extractors, src);
 };
 
 /**
