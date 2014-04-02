@@ -1,37 +1,35 @@
 # decompress [![Build Status](https://secure.travis-ci.org/kevva/decompress.png?branch=master)](http://travis-ci.org/kevva/decompress)
 
-Easily extract `.zip`, `.tar` and `.tar.gz` archives. Based on the extract 
-utility in [Bower](https://github.com/bower/bower).
+> Easily extract `.zip`, `.tar` and `.tar.gz` archives. Based on the extract utility in [Bower](https://github.com/bower/bower).
 
-## Getting started
+## Install
 
-Install with [npm](https://npmjs.org/package/decompress): `npm install decompress`
+```bash
+$ npm install --save decompress
+```
 
-## Examples
+## Usage
 
-You'll only need to pass a type into `ext` and it'll figure the rest out for 
+You'll only need to pass a type into `ext` and it'll figure the rest out for
 you.
 
 ```js
 var decompress = require('decompress');
 var fs = require('fs');
 
-var src = fs.createReadStream('foo.tar.gz');
-var dest = decompress({ ext: '.tar.gz' });
-
-src.pipe(dest);
+fs.createReadStream('foo.tar.gz').pipe(decompress({ ext: '.tar.gz' }));
 ```
 
 ## API
 
 ### decompress(opts)
 
-Extract an archive using the `ext` option to determine which extractor to use. 
+Extract an archive using the `ext` option to determine which extractor to use.
 If no `path` is specified it'll extract it to your current location.
 
 ### decompress.canExtract(src, mime)
 
-Determine if a file can be extracted or not by checking the file extension 
+Determine if a file can be extracted or not by checking the file extension
 and/or the MIME type.
 
 ```js
@@ -56,7 +54,7 @@ String that can be a file name, URL, MIME type etc.
 Type: `String`  
 Default: `process.cwd()`
 
-Path to extract the archive to. If no `path` is defined it'll extract it to your 
+Path to extract the archive to. If no `path` is defined it'll extract it to your
 current location.
 
 ### `strip`
@@ -68,4 +66,4 @@ Equivalent to `--strip-components` for tar.
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License) (c) [Kevin Mårtensson](http://kevinmartensson.com)
+[MIT License](http://en.wikipedia.org/wiki/MIT_License) © [Kevin Mårtensson](http://kevinmartensson.com)

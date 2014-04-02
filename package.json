@@ -2,41 +2,38 @@
   "name": "decompress",
   "version": "0.2.0",
   "description": "Easily extract zip, tar and tar.gz archives",
+  "license": "MIT",
+  "repository": "kevva/decompress",
+  "author": {
+    "name": "Kevin Mårtensson",
+    "email": "kevinmartensson@gmail.com",
+    "url": "https://github.com/kevva"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha --reporter list"
+  },
+  "files": [
+    "index.js"
+  ],
   "keywords": [
     "extract",
     "tar",
     "tar.gz",
     "zip"
   ],
-  "homepage": "https://github.com/kevva/decompress",
-  "bugs": "https://github.com/kevva/decompress/issues",
-  "author": {
-    "name": "Kevin Martensson",
-    "email": "kevinmartensson@gmail.com",
-    "url": "http://kevinmartensson.com"
-  },
-  "license": "MIT",
-  "repository": "git://github.com/kevva/decompress.git",
-  "scripts": {
-    "test": "mocha --reporter list"
-  },
-  "main": "index.js",
-  "files": [
-    "index.js"
-  ],
   "dependencies": {
     "adm-zip": "^0.4.3",
+    "map-key": "^0.1.1",
     "mkdirp": "^0.3.5",
     "rimraf": "^2.2.2",
-    "stream-combiner": "^0.0.2",
+    "stream-combiner": "^0.0.4",
     "tar": "^0.1.18",
-    "tempfile": "^0.1.2",
-    "map-key": "^0.1.0"
+    "tempfile": "^0.1.2"
   },
   "devDependencies": {
-    "mocha": "~1.17.1"
-  },
-  "engines": {
-    "node": ">=0.10.0"
+    "mocha": "^1.18.2"
   }
 }
