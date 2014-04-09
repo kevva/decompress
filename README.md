@@ -1,4 +1,4 @@
-# decompress [![Build Status](https://secure.travis-ci.org/kevva/decompress.png?branch=master)](http://travis-ci.org/kevva/decompress)
+# decompress [![Build Status](https://travis-ci.org/kevva/decompress.svg?branch=master)](https://travis-ci.org/kevva/decompress)
 
 > Easily extract `.zip`, `.tar` and `.tar.gz` archives. Based on the extract utility in [Bower](https://github.com/bower/bower).
 
