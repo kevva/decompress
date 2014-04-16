@@ -64,6 +64,32 @@ Default: `0`
 
 Equivalent to `--strip-components` for tar.
 
+## CLI
+
+You can also use it as a CLI app by installing it globally:
+
+```bash
+$ npm install --global decompress
+```
+
+### Usage
+
+```bash
+$ decompress --help
+
+Usage
+  $ decompress <file>
+  $ cat <file> | decompress
+
+Example
+  $ decompress --out dist --strip 1 archive.zip
+  $ cat files.txt | decompress --out dist
+
+Options
+  -o, --out <path>        Path to extract the archive to
+  -s, --strip <number>    Strip path segments from root when extracting
+```
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License) © [Kevin Mårtensson](http://kevinmartensson.com)
