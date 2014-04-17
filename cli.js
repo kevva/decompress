@@ -2,9 +2,9 @@
 'use strict';
 
 var decompress = require('./');
+var extname = require('extname');
 var fs = require('fs');
 var nopt = require('nopt');
-var path = require('path');
 var pkg = require('./package.json');
 var stdin = require('get-stdin');
 
@@ -69,9 +69,10 @@ if (opts.version) {
 function run(input) {
     var src = input;
     var dest = opts.out || process.cwd();
+    var ext = '.' + extname(src).ext;
 
     src.forEach(function (s) {
-        fs.createReadStream(s).pipe(decompress({ ext: path.extname(s), path: dest, strip: opts.strip }));
+        fs.createReadStream(s).pipe(decompress({ ext: ext, path: dest, strip: opts.strip }));
     });
 }
 
