@@ -1,6 +1,6 @@
 # decompress [![Build Status](https://travis-ci.org/kevva/decompress.svg?branch=master)](https://travis-ci.org/kevva/decompress)
 
-> Easily extract `.zip`, `.tar` and `.tar.gz` archives. Based on the extract utility in [Bower](https://github.com/bower/bower).
+> Easily extract `.zip`, `.tar` and `.tar.gz` archives
 
 ## Install
 
@@ -66,13 +66,9 @@ Equivalent to `--strip-components` for tar.
 
 ## CLI
 
-You can also use it as a CLI app by installing it globally:
-
 ```bash
 $ npm install --global decompress
 ```
-
-### Usage
 
 ```bash
 $ decompress --help
@@ -92,4 +88,4 @@ Options
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License) © [Kevin Mårtensson](http://kevinmartensson.com)
+MIT © [Kevin Mårtensson](http://kevinmartensson.com)
