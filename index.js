@@ -108,7 +108,7 @@ Decompress.prototype._extractZip = function () {
         zip.getEntries().forEach(function (entry) {
             if (!entry.isDirectory) {
                 var dest;
-                var dir = path.dirname(entry.entryName.toString()).split(path.sep);
+                var dir = path.dirname(entry.entryName.toString()).split('/');
                 var file = path.basename(entry.rawEntryName.toString());
 
                 if (self.strip) {
