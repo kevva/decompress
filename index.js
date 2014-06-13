@@ -1,175 +1,166 @@
 'use strict';
 
-var fs = require('fs');
-var map = require('map-key');
-var mkdir = require('mkdirp');
+var each = require('each-async');
+var fs = require('fs-extra');
 var path = require('path');
-var pipeline = require('stream-combiner');
-var rm = require('rimraf');
-var tempfile = require('tempfile');
+var Ware = require('ware');
 
 /**
- * Initialize Decompress with options
+ * Initialize Decompress
  *
- * Options:
- *
- *   - `ext` String with file name, MIME type, etc
- *   - `path` Path to extract to
- *   - `strip` Equivalent to --strip-components for tar
- *
- * @param {Object} opts
- * @api private
+ * @api public
  */
 
-function Decompress(opts) {
-    opts = opts || {};
-    this.opts = opts;
-    this.path = opts.path || process.cwd();
-    this.ext = opts.ext || '';
-    this.strip = +opts.strip || 0;
-    this.extractors = {
-        '.zip': this._extractZip,
-        '.tar': this._extractTar,
-        '.tar.gz': this._extractTarGz,
-        '.tgz': this._extractTarGz,
-        'application/zip': this._extractZip,
-        'application/x-gzip': this._extractTarGz,
-        'application/x-tar': this._extractTar,
-        'application/x-tgz': this._extractTarGz
-    };
-    this.extractor = this._getExtractor(this.ext);
+function Decompress() {
+    this.ware = new Ware();
 }
 
 /**
- * Extract an archive
+ * Add a plugin to the middleware stack
  *
+ * @param {Function} plugin
  * @api public
  */
 
-Decompress.prototype.extract = function () {
-    var self = this;
-    var stream = this.extractor();
-
-    if (!fs.existsSync(this.path)) {
-        mkdir.sync(self.path);
-    }
-
-    return stream;
+Decompress.prototype.use = function (plugin) {
+    this.ware.use(plugin);
+    return this;
 };
 
 /**
- * Check if a file can be extracted
+ * Get or set the source file
  *
- * @param {String} src
- * @param {String} mime
+ * @param {String|Buffer} file
  * @api public
  */
 
-Decompress.prototype.canExtract = function (src, mime) {
-    if (this._getExtractor(src)) {
-        return true;
+Decompress.prototype.src = function (file) {
+    if (!arguments.length) {
+        return this._src;
     }
 
-    if (mime && this._getExtractor(mime)) {
-        return true;
-    }
-
-    return false;
+    this._src = file;
+    return this;
 };
 
 /**
- * Get the extractor for a desired file
+ * Get or set the destination path
  *
- * @param {String} src
- * @api private
+ * @param {String} path
+ * @api public
  */
 
-Decompress.prototype._getExtractor = function (src) {
-    src = src.toLowerCase();
-    return map(this.extractors, src);
+Decompress.prototype.dest = function (path) {
+    if (!arguments.length) {
+        return this._dest;
+    }
+
+    this._dest = path;
+    return this;
 };
 
 /**
- * Extract a zip file
+ * Decompress archive
  *
- * @api private
+ * @param {Function} cb
+ * @api public
  */
 
-Decompress.prototype._extractZip = function () {
-    var AdmZip = require('adm-zip');
-    var tmp = tempfile('.zip');
+Decompress.prototype.decompress = function (cb) {
+    cb = cb || function () {};
     var self = this;
-    var stream = fs.createWriteStream(tmp);
-    var zip;
 
-    stream.on('close', function () {
-        zip = new AdmZip(tmp);
+    this.read(function (err, file) {
+        if (!file || file.contents.length === 0) {
+            return cb();
+        }
 
-        zip.getEntries().forEach(function (entry) {
-            if (!entry.isDirectory) {
-                var dest;
-                var dir = path.dirname(entry.entryName.toString()).split('/');
-                var file = path.basename(entry.rawEntryName.toString());
-
-                if (self.strip) {
-                    dir = dir.slice(self.strip);
-                }
-
-                dest = path.join(self.path, dir.join(path.sep), file);
-
-                mkdir.sync(path.dirname(dest));
-                fs.writeFileSync(dest, entry.getData());
-
-                if (self.opts.mode) {
-                    fs.chmodSync(dest, self.opts.mode);
-                }
+        self.run(file, function (err) {
+            if (err) {
+                return cb(err);
             }
+
+            self.write(self.files, function (err) {
+                cb(err, file);
+            });
         });
-
-        rm.sync(tmp);
     });
-
-    return stream;
 };
 
 /**
- * Extract a tar file
+ * Run a file through the middleware
  *
- * @api private
+ * @param {Object} file
+ * @param {Function} cb
+ * @api public
  */
 
-Decompress.prototype._extractTar = function () {
-    var tar = require('tar');
-    var stream = tar.Extract(this.opts);
-
-    return stream;
+Decompress.prototype.run = function (file, cb) {
+    this.ware.run(file, this, cb);
 };
 
 /**
- * Extract a tar.gz file
+ * Read the archive
  *
- * @api private
+ * @param {Function} cb
+ * @api public
  */
 
-Decompress.prototype._extractTarGz = function () {
-    var tar = require('tar');
-    var zlib = require('zlib');
-    var stream = zlib.Unzip();
-    var dest = tar.Extract(this.opts);
+Decompress.prototype.read = function (cb) {
+    var file = {};
+    var src = this.src();
 
-    return pipeline(stream, dest);
+    if (Buffer.isBuffer(src)) {
+        file.contents = src;
+
+        return cb(null, file);
+    }
+
+    fs.readFile(src, function (err, buf) {
+        if (err) {
+            return cb(err);
+        }
+
+        file.contents = buf;
+        file.path = src;
+
+        cb(null, file);
+    });
+};
+
+/**
+ * Write files to destination
+ *
+ * @param {Array} files
+ * @param {Function} cb
+ * @api public
+ */
+
+Decompress.prototype.write = function (files, cb) {
+    var dest = this.dest();
+
+    if (!dest) {
+        return cb();
+    }
+
+    each(files, function (file, i, done) {
+        fs.outputFile(path.join(dest, file.path), file.contents, function (err) {
+            done(err);
+        });
+    }, function (err) {
+        if (err) {
+            return cb(err);
+        }
+
+        cb();
+    });
 };
 
 /**
  * Module exports
  */
 
-module.exports = function (opts) {
-    var decompress = new Decompress(opts);
-    return decompress.extract();
-};
-
-module.exports.canExtract = function (src, mime) {
-    var decompress = new Decompress();
-    return decompress.canExtract(src, mime);
-};
+module.exports = Decompress;
+module.exports.tar = require('decompress-tar');
+module.exports.targz = require('decompress-targz');
+module.exports.zip = require('decompress-zip');
