@@ -163,4 +163,4 @@ Decompress.prototype.write = function (files, cb) {
 module.exports = Decompress;
 module.exports.tar = require('decompress-tar');
 module.exports.targz = require('decompress-targz');
-module.exports.zip = require('decompress-zip');
+module.exports.zip = require('decompress-unzip');
