@@ -62,8 +62,9 @@ describe('decompress()', function () {
             .dest(path.join(__dirname, 'tmp'))
             .use(Decompress.zip({ strip: 1 }))
             .decompress(function (err) {
+                console.log(err);
                 assert(!err);
-                assert(fs.existsSync(path.join(__dirname, 'tmp/test.jpg')));
+                assert(fs.existsSync(path.join(__dirname, 'tmp/test-strip.jpg')));
                 cb();
             });
     });
