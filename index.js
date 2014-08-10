@@ -75,6 +75,10 @@ Decompress.prototype.decompress = function (cb) {
             return cb();
         }
 
+        if (err) {
+            return cb(err);
+        }
+
         self.run(file, function (err) {
             if (err) {
                 return cb(err);
@@ -112,7 +116,6 @@ Decompress.prototype.read = function (cb) {
 
     if (Buffer.isBuffer(src)) {
         file.contents = src;
-
         return cb(null, file);
     }
 
