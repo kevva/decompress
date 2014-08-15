@@ -72,16 +72,19 @@ Decompress.prototype.decompress = function (cb) {
 
     this.read(function (err, file) {
         if (!file || file.contents.length === 0) {
-            return cb();
+            cb();
+            return;
         }
 
         if (err) {
-            return cb(err);
+            cb(err);
+            return;
         }
 
         self.run(file, function (err) {
             if (err) {
-                return cb(err);
+                cb(err);
+                return;
             }
 
             self.write(self.files, function (err) {
@@ -116,12 +119,14 @@ Decompress.prototype.read = function (cb) {
 
     if (Buffer.isBuffer(src)) {
         file.contents = src;
-        return cb(null, file);
+        cb(null, file);
+        return;
     }
 
     fs.readFile(src, function (err, buf) {
         if (err) {
-            return cb(err);
+            cb(err);
+            return;
         }
 
         file.contents = buf;
@@ -143,16 +148,23 @@ Decompress.prototype.write = function (files, cb) {
     var dest = this.dest();
 
     if (!dest) {
-        return cb();
+        cb();
+        return;
     }
 
     each(files, function (file, i, done) {
         fs.outputFile(path.join(dest, file.path), file.contents, function (err) {
-            done(err);
+            if (err) {
+                done(err);
+                return;
+            }
+
+            done();
         });
     }, function (err) {
         if (err) {
-            return cb(err);
+            cb(err);
+            return;
         }
 
         cb();
