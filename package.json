@@ -28,7 +28,7 @@
   "dependencies": {
     "decompress-tar": "^1.0.0",
     "decompress-targz": "^1.0.0",
-    "decompress-unzip": "^0.1.0",
+    "decompress-unzip": "^1.0.0",
     "each-async": "^1.0.0",
     "fs-extra": "^0.11.0",
     "ware": "^0.3.0"
