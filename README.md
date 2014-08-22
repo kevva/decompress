@@ -84,6 +84,25 @@ var decompress = new Decompress()
     .use(Decompress.zip({ strip: 1 }));
 ```
 
+## CLI
+
+```bash
+$ npm install --global decompress
+```
+
+```sh
+$ decompress --help
+
+Usage
+  $ decompress <file> [directory]
+
+Example
+  $ decompress --strip 1 file.zip out
+
+Options
+  -s, --strip    Equivalent to --strip-components for tar
+```
+
 ## License
 
 MIT © [Kevin Mårtensson](http://kevinmartensson.com)
