@@ -12,6 +12,9 @@
   "engines": {
     "node": ">=0.10.0"
   },
+  "bin": {
+    "decompress": "cli.js"
+  },
   "scripts": {
     "test": "mocha --reporter list"
   },
@@ -31,6 +34,7 @@
     "decompress-unzip": "^1.0.0",
     "each-async": "^1.0.0",
     "fs-extra": "^0.11.0",
+    "nopt": "^3.0.1",
     "ware": "^0.3.0"
   },
   "devDependencies": {
