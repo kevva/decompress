@@ -147,7 +147,7 @@ Decompress.prototype.read = function (cb) {
 Decompress.prototype.write = function (files, cb) {
     var dest = this.dest();
 
-    if (!dest) {
+    if (!dest || !files) {
         cb();
         return;
     }
