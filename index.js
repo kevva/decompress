@@ -12,6 +12,10 @@ var Ware = require('ware');
  */
 
 function Decompress() {
+    if (!(this instanceof Decompress)) {
+        return new Decompress();
+    }
+
     this.ware = new Ware();
 }
 
