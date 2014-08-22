@@ -16,7 +16,7 @@
     "decompress": "cli.js"
   },
   "scripts": {
-    "test": "mocha --reporter list"
+    "test": "node test/test.js"
   },
   "files": [
     "index.js"
@@ -38,7 +38,7 @@
     "ware": "^0.3.0"
   },
   "devDependencies": {
-    "mocha": "^1.18.2",
+    "ava": "0.0.4",
     "rimraf": "^2.2.8"
   }
 }

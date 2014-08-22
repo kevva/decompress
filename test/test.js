@@ -1,4 +1,3 @@
-/*global afterEach, describe, it */
 'use strict';
 
 var assert = require('assert');
@@ -6,65 +5,80 @@ var Decompress = require('../');
 var fs = require('fs');
 var path = require('path');
 var rm = require('rimraf');
+var test = require('ava');
 
-describe('decompress()', function () {
-    afterEach(function (cb) {
-        rm(path.join(__dirname, 'tmp'), cb);
-    });
+test('extract .tar', function (t) {
+    var decompress = new Decompress()
+        .src(path.join(__dirname, 'fixtures/test.tar'))
+        .dest(path.join(__dirname, 'tmp'))
+        .use(Decompress.tar());
 
-    it('should extract .tar', function (cb) {
-        var decompress = new Decompress();
+    decompress.decompress(function (err) {
+        t.assert(!err);
 
-        decompress
-            .src(path.join(__dirname, 'fixtures/test.tar'))
-            .dest(path.join(__dirname, 'tmp'))
-            .use(Decompress.tar())
-            .decompress(function (err) {
-                assert(!err);
-                assert(fs.existsSync(path.join(__dirname, 'tmp/test.jpg')));
-                cb();
+        fs.exists(path.join(decompress.dest(), 'test.jpg'), function (exists) {
+            t.assert(exists);
+
+            rm(decompress.dest(), function (err) {
+                t.assert(!err);
             });
+        });
     });
+});
 
-    it('should extract .tar.gz', function (cb) {
-        var decompress = new Decompress();
+test('extract .tar.gz', function (t) {
+    var decompress = new Decompress()
+        .src(path.join(__dirname, 'fixtures/test.tar.gz'))
+        .dest(path.join(__dirname, 'tmp'))
+        .use(Decompress.targz());
 
-        decompress
-            .src(path.join(__dirname, 'fixtures/test.tar.gz'))
-            .dest(path.join(__dirname, 'tmp'))
-            .use(Decompress.targz())
-            .decompress(function (err) {
-                assert(!err);
-                assert(fs.existsSync(path.join(__dirname, 'tmp/test.jpg')));
-                cb();
+    decompress.decompress(function (err) {
+        t.assert(!err);
+
+        fs.exists(path.join(decompress.dest(), 'test.jpg'), function (exists) {
+            t.assert(exists);
+
+            rm(decompress.dest(), function (err) {
+                t.assert(!err);
             });
+        });
     });
+});
 
-    it('should extract .zip', function (cb) {
-        var decompress = new Decompress();
+test('extract .zip', function (t) {
+    var decompress = new Decompress()
+        .src(path.join(__dirname, 'fixtures/test.zip'))
+        .dest(path.join(__dirname, 'tmp'))
+        .use(Decompress.zip());
 
-        decompress
-            .src(path.join(__dirname, 'fixtures/test.zip'))
-            .dest(path.join(__dirname, 'tmp'))
-            .use(Decompress.zip())
-            .decompress(function (err) {
-                assert(!err);
-                assert(fs.existsSync(path.join(__dirname, 'tmp/test.jpg')));
-                cb();
+    decompress.decompress(function (err) {
+        t.assert(!err);
+
+        fs.exists(path.join(decompress.dest(), 'test.jpg'), function (exists) {
+            t.assert(exists);
+
+            rm(decompress.dest(), function (err) {
+                t.assert(!err);
             });
+        });
     });
+});
 
-    it('should extract .zip using the strip option', function (cb) {
-        var decompress = new Decompress();
+test('extract .zip using the strip option', function (t) {
+    var decompress = new Decompress()
+        .src(path.join(__dirname, 'fixtures/test-strip.zip'))
+        .dest(path.join(__dirname, 'tmp'))
+        .use(Decompress.zip({ strip: 1 }));
 
-        decompress
-            .src(path.join(__dirname, 'fixtures/test-strip.zip'))
-            .dest(path.join(__dirname, 'tmp'))
-            .use(Decompress.zip({ strip: 1 }))
-            .decompress(function (err) {
-                assert(!err);
-                assert(fs.existsSync(path.join(__dirname, 'tmp/test-strip.jpg')));
-                cb();
+    decompress.decompress(function (err) {
+        t.assert(!err);
+
+        fs.exists(path.join(decompress.dest(), 'test-strip.jpg'), function (exists) {
+            t.assert(exists);
+
+            rm(decompress.dest(), function (err) {
+                t.assert(!err);
             });
+        });
     });
 });
