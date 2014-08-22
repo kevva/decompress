@@ -12,6 +12,7 @@ $ npm install --save decompress
 
 ```js
 var Decompress = require('decompress');
+
 var decompress = new Decompress()
     .src('foo.zip')
     .dest('destFolder')
@@ -41,10 +42,6 @@ Set the destination to where your file will be extracted to.
 ### .decompress(cb)
 
 Extract your file with the given settings.
-
-### .run(file, cb)
-
-Run all middleware plugins on your file.
 
 ## Plugins
 
