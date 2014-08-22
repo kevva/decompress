@@ -73,7 +73,8 @@ function isFile(path) {
 /**
  * Run
  *
- * @param {Buffer} input
+ * @param {String} input
+ * @param {String} output
  * @param {Object} opts
  * @api private
  */
