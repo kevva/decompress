@@ -1,6 +1,6 @@
 {
   "name": "decompress",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Easily extract archives",
   "license": "MIT",
   "repository": "kevva/decompress",
