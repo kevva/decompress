@@ -8,14 +8,17 @@ var Ware = require('ware');
 /**
  * Initialize Decompress
  *
+ * @param {Object} opts
  * @api public
  */
 
-function Decompress() {
+function Decompress(opts) {
     if (!(this instanceof Decompress)) {
         return new Decompress();
     }
 
+    this.opts = opts || {};
+    this.opts.mode = parseInt(this.opts.mode, 8) || null;
     this.ware = new Ware();
 }
 
@@ -150,6 +153,7 @@ Decompress.prototype.read = function (cb) {
 
 Decompress.prototype.write = function (files, cb) {
     var dest = this.dest();
+    var mode = this.opts.mode;
 
     if (!dest || !files) {
         cb();
@@ -161,6 +165,17 @@ Decompress.prototype.write = function (files, cb) {
             if (err) {
                 done(err);
                 return;
+            }
+
+            if (mode) {
+                return fs.chmod(path.join(dest, file.path), mode, function (err) {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
+
+                    done();
+                });
             }
 
             done();

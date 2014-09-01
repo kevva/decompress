@@ -13,7 +13,7 @@ $ npm install --save decompress
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress()
+var decompress = new Decompress({ mode: 755 })
     .src('foo.zip')
     .dest('destFolder')
     .use(Decompress.zip({ strip: 1 }));
@@ -21,9 +21,9 @@ var decompress = new Decompress()
 decompress.decompress();
 ```
 
-### API
+## API
 
-### new Decompress()
+### new Decompress(opts)
 
 Creates a new `Decompress` instance.
 
@@ -42,6 +42,15 @@ Set the destination to where your file will be extracted to.
 ### .decompress(cb)
 
 Extract your file with the given settings.
+
+## Options
+
+### mode
+
+Type: `Number`  
+Default: `null`
+
+Set mode on the extracted files.
 
 ## Plugins
 
@@ -100,6 +109,7 @@ Example
   $ decompress --strip 1 file.zip out
 
 Options
+  -m, --mode     Set mode on the extracted files
   -s, --strip    Equivalent to --strip-components for tar
 ```
 

@@ -82,3 +82,23 @@ test('extract .zip using the strip option', function (t) {
         });
     });
 });
+
+test('extract .zip and set mode on extracted file', function (t) {
+    var decompress = new Decompress({ mode: 777 })
+        .src(path.join(__dirname, 'fixtures/test.zip'))
+        .dest(path.join(__dirname, 'tmp'))
+        .use(Decompress.zip());
+
+    decompress.decompress(function (err) {
+        t.assert(!err);
+
+        fs.stat(path.join(decompress.dest(), 'test.jpg'), function (err, stats) {
+            t.assert(!err);
+            t.assert(stats.mode.toString(8) === '100777');
+
+            rm(decompress.dest(), function (err) {
+                t.assert(!err);
+            });
+        });
+    });
+});

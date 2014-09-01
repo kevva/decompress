@@ -12,10 +12,12 @@ var pkg = require('./package.json');
 
 var opts = nopt({
     help: Boolean,
+    mode: Number,
     strip: String,
     version: Boolean
 }, {
     h: '--help',
+    m: '--mode',
     s: '--strip',
     v: '--version'
 });
@@ -34,6 +36,7 @@ function help() {
     console.log('  $ decompress --strip 1 file.zip out');
     console.log('');
     console.log('Options');
+    console.log('  -m, --mode     Set mode on the extracted files');
     console.log('  -s, --strip    Equivalent to --strip-components for tar');
 }
 
@@ -80,7 +83,7 @@ function isFile(path) {
  */
 
 function run(input, output, opts) {
-    var decompress = new Decompress()
+    var decompress = new Decompress(opts)
         .src(input)
         .dest(output)
         .use(Decompress.tar(opts))
