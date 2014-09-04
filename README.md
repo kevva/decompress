@@ -18,7 +18,13 @@ var decompress = new Decompress({ mode: 755 })
     .dest('destFolder')
     .use(Decompress.zip({ strip: 1 }));
 
-decompress.decompress();
+decompress.decompress(function (err) {
+    if (err) {
+        throw err;
+    }
+
+    console.log('Archive extracted successfully!');
+});
 ```
 
 ## API
@@ -27,10 +33,6 @@ decompress.decompress();
 
 Creates a new `Decompress` instance.
 
-### .use(plugin)
-
-Add a `plugin` to the middleware stack.
-
 ### .src(file)
 
 Set the file to be extract. Can be a `Buffer` or the path to a file.
@@ -38,6 +40,10 @@ Set the file to be extract. Can be a `Buffer` or the path to a file.
 ### .dest(path)
 
 Set the destination to where your file will be extracted to.
+
+### .use(plugin)
+
+Add a `plugin` to the middleware stack.
 
 ### .decompress(cb)
 
