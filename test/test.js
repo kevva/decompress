@@ -1,6 +1,5 @@
 'use strict';
 
-var assert = require('assert');
 var Decompress = require('../');
 var fs = require('fs');
 var path = require('path');
@@ -12,6 +11,25 @@ test('extract .tar', function (t) {
         .src(path.join(__dirname, 'fixtures/test.tar'))
         .dest(path.join(__dirname, 'tmp'))
         .use(Decompress.tar());
+
+    decompress.decompress(function (err) {
+        t.assert(!err);
+
+        fs.exists(path.join(decompress.dest(), 'test.jpg'), function (exists) {
+            t.assert(exists);
+
+            rm(decompress.dest(), function (err) {
+                t.assert(!err);
+            });
+        });
+    });
+});
+
+test('extract .tar.bz2', function (t) {
+    var decompress = new Decompress()
+        .src(path.join(__dirname, 'fixtures/test.tar.bz2'))
+        .dest(path.join(__dirname, 'tmp'))
+        .use(Decompress.tarbz2());
 
     decompress.decompress(function (err) {
         t.assert(!err);

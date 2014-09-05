@@ -31,6 +31,7 @@
   ],
   "dependencies": {
     "decompress-tar": "^1.0.0",
+    "decompress-tarbz2": "^1.0.1",
     "decompress-targz": "^1.0.0",
     "decompress-unzip": "^1.0.0",
     "each-async": "^1.0.0",
