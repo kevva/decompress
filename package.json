@@ -23,11 +23,15 @@
     "index.js"
   ],
   "keywords": [
+    "bz2",
+    "bzip2",
     "decompress",
     "extract",
     "tar",
+    "tar.bz",
     "tar.gz",
-    "zip"
+    "zip",
+    "unzip"
   ],
   "dependencies": {
     "concat-stream": "^1.4.6",
