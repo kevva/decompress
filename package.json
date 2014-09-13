@@ -30,14 +30,16 @@
     "zip"
   ],
   "dependencies": {
+    "concat-stream": "^1.4.6",
     "decompress-tar": "^1.0.0",
     "decompress-tarbz2": "^1.0.1",
     "decompress-targz": "^1.0.0",
     "decompress-unzip": "^1.0.0",
-    "each-async": "^1.0.0",
-    "fs-extra": "^0.11.0",
     "nopt": "^3.0.1",
-    "ware": "^0.3.0"
+    "stream-combiner": "^0.2.1",
+    "through2": "^0.6.1",
+    "vinyl": "^0.4.3",
+    "vinyl-fs": "^0.3.7"
   },
   "devDependencies": {
     "ava": "0.0.4",

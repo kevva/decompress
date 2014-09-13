@@ -1,9 +1,10 @@
 'use strict';
 
-var each = require('each-async');
-var fs = require('fs-extra');
-var path = require('path');
-var Ware = require('ware');
+var combine = require('stream-combiner');
+var concat = require('concat-stream');
+var File = require('vinyl');
+var fs = require('vinyl-fs');
+var through = require('through2');
 
 /**
  * Initialize Decompress
@@ -19,25 +20,13 @@ function Decompress(opts) {
 
     this.opts = opts || {};
     this.opts.mode = parseInt(this.opts.mode, 8) || null;
-    this.ware = new Ware();
+    this.streams = [];
 }
 
 /**
- * Add a plugin to the middleware stack
+ * Get or set the source files
  *
- * @param {Function} plugin
- * @api public
- */
-
-Decompress.prototype.use = function (plugin) {
-    this.ware.use(plugin);
-    return this;
-};
-
-/**
- * Get or set the source file
- *
- * @param {String|Buffer} file
+ * @param {Array|Buffer|String} file
  * @api public
  */
 
@@ -51,18 +40,30 @@ Decompress.prototype.src = function (file) {
 };
 
 /**
- * Get or set the destination path
+ * Get or set the destination folder
  *
- * @param {String} path
+ * @param {String} dir
  * @api public
  */
 
-Decompress.prototype.dest = function (path) {
+Decompress.prototype.dest = function (dir) {
     if (!arguments.length) {
         return this._dest;
     }
 
-    this._dest = path;
+    this._dest = dir;
+    return this;
+};
+
+/**
+ * Add a plugin to the middleware stack
+ *
+ * @param {Function} plugin
+ * @api public
+ */
+
+Decompress.prototype.use = function (plugin) {
+    this.streams.push(plugin);
     return this;
 };
 
@@ -73,121 +74,48 @@ Decompress.prototype.dest = function (path) {
  * @api public
  */
 
-Decompress.prototype.decompress = function (cb) {
+Decompress.prototype.run = function (cb) {
     cb = cb || function () {};
-    var self = this;
+    this.streams.unshift(this.read(this.src()));
 
-    this.read(function (err, file) {
-        if (!file || file.contents.length === 0) {
-            cb();
-            return;
-        }
+    if (this.dest()) {
+        this.streams.push(fs.dest(this.dest(), this.opts));
+    }
 
-        if (err) {
-            cb(err);
-            return;
-        }
-
-        self.run(file, function (err) {
-            if (err) {
-                cb(err);
-                return;
-            }
-
-            self.write(self.files, function (err) {
-                cb(err, file);
-            });
-        });
+    var pipe = combine(this.streams);
+    var end = concat(function (file) {
+        cb(null, file);
     });
+
+    pipe.on('error', function (err) {
+        cb(err);
+        return;
+    });
+
+    pipe.pipe(end);
 };
 
 /**
- * Run a file through the middleware
+ * Read the source files
  *
- * @param {Object} file
- * @param {Function} cb
- * @api public
+ * @param {Array|Buffer|String} src
+ * @api private
  */
 
-Decompress.prototype.run = function (file, cb) {
-    this.ware.run(file, this, cb);
-};
-
-/**
- * Read the archive
- *
- * @param {Function} cb
- * @api public
- */
-
-Decompress.prototype.read = function (cb) {
-    var file = {};
-    var src = this.src();
-
+Decompress.prototype.read = function (src) {
     if (Buffer.isBuffer(src)) {
-        file.contents = src;
-        cb(null, file);
-        return;
-    }
-
-    fs.readFile(src, function (err, buf) {
-        if (err) {
-            cb(err);
-            return;
-        }
-
-        file.contents = buf;
-        file.path = src;
-
-        cb(null, file);
-    });
-};
-
-/**
- * Write files to destination
- *
- * @param {Array} files
- * @param {Function} cb
- * @api public
- */
-
-Decompress.prototype.write = function (files, cb) {
-    var dest = this.dest();
-    var mode = this.opts.mode;
-
-    if (!dest || !files) {
-        cb();
-        return;
-    }
-
-    each(files, function (file, i, done) {
-        fs.outputFile(path.join(dest, file.path), file.contents, function (err) {
-            if (err) {
-                done(err);
-                return;
-            }
-
-            if (mode) {
-                return fs.chmod(path.join(dest, file.path), mode, function (err) {
-                    if (err) {
-                        cb(err);
-                        return;
-                    }
-
-                    done();
-                });
-            }
-
-            done();
+        var stream = through.obj(function (file, enc, cb) {
+            cb(null, file);
         });
-    }, function (err) {
-        if (err) {
-            cb(err);
-            return;
-        }
 
-        cb();
-    });
+        stream.end(new File({
+            contents: src
+        }));
+
+        return stream;
+    }
+
+    return fs.src(src);
 };
 
 /**
