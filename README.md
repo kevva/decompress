@@ -18,7 +18,7 @@ var decompress = new Decompress({ mode: 755 })
     .dest('destFolder')
     .use(Decompress.zip({ strip: 1 }));
 
-decompress.decompress(function (err) {
+decompress.run(function (err) {
     if (err) {
         throw err;
     }
@@ -33,9 +33,10 @@ decompress.decompress(function (err) {
 
 Creates a new `Decompress` instance.
 
-### .src(file)
+### .src(files)
 
-Set the file to be extract. Can be a `Buffer` or the path to a file.
+Set the files to be decompress. Takes a buffer, glob string or an array of glob 
+strings as argument.
 
 ### .dest(path)
 
@@ -45,7 +46,7 @@ Set the destination to where your file will be extracted to.
 
 Add a `plugin` to the middleware stack.
 
-### .decompress(cb)
+### .run(cb)
 
 Extract your file with the given settings.
 
@@ -63,6 +64,7 @@ Set mode on the extracted files.
 The following [plugins](https://www.npmjs.org/browse/keyword/decompressplugin) are bundled with decompress:
 
 * [tar](#tar) — Extract TAR files.
+* [tar.bz](#tarbz) — Extract TAR.BZ files.
 * [tar.gz](#targz) — Extract TAR.GZ files.
 * [zip](#zip) — Extract ZIP files.
 
@@ -75,6 +77,17 @@ var Decompress = require('decompress');
 
 var decompress = new Decompress()
     .use(Decompress.tar({ strip: 1 }));
+```
+
+### .tarbz()
+
+Extract TAR.BZ files.
+
+```js
+var Decompress = require('decompress');
+
+var decompress = new Decompress()
+    .use(Decompress.tarbz({ strip: 1 }));
 ```
 
 ### .targz()
@@ -121,4 +134,4 @@ Options
 
 ## License
 
-MIT © [Kevin Mårtensson](http://kevinmartensson.com)
+MIT © [Kevin Mårtensson](https://github.com/kevva)

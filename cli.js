@@ -66,6 +66,10 @@ if (opts.version) {
  */
 
 function isFile(path) {
+    if (/^[^\s]+\.\w*$/g.test(path)) {
+        return true;
+    }
+
     try {
         return fs.statSync(path).isFile();
     } catch (e) {
@@ -76,21 +80,20 @@ function isFile(path) {
 /**
  * Run
  *
- * @param {String} input
- * @param {String} output
- * @param {Object} opts
+ * @param {String} src
+ * @param {String} dest
  * @api private
  */
 
-function run(input, output, opts) {
+function run(src, dest) {
     var decompress = new Decompress(opts)
-        .src(input)
-        .dest(output)
+        .src(src)
+        .dest(dest)
         .use(Decompress.tar(opts))
         .use(Decompress.targz(opts))
         .use(Decompress.zip(opts));
 
-    decompress.decompress(function (err) {
+    decompress.run(function (err) {
         if (err) {
             console.error(err);
             process.exit(1);
@@ -102,17 +105,17 @@ function run(input, output, opts) {
  * Apply arguments
  */
 
-var input = opts.argv.remain;
-var output = process.cwd();
+var src = opts.argv.remain;
+var dest = process.cwd();
 
-if (input.length === 0) {
+if (!src.length) {
     help();
     return;
 }
 
-if (input.length > 1 && !isFile(input[input.length - 1])) {
-    output = input[input.length - 1];
-    input.pop();
+if (!isFile(src[src.length - 1])) {
+    dest = src[src.length - 1];
+    src.pop();
 }
 
-run(input.join(), output, opts);
+run(src, dest);
