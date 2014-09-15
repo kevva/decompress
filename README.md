@@ -64,7 +64,7 @@ Set mode on the extracted files.
 The following [plugins](https://www.npmjs.org/browse/keyword/decompressplugin) are bundled with decompress:
 
 * [tar](#tar) — Extract TAR files.
-* [tar.bz](#tarbz) — Extract TAR.BZ files.
+* [tar.bz2](#tarbz2) — Extract TAR.BZ files.
 * [tar.gz](#targz) — Extract TAR.GZ files.
 * [zip](#zip) — Extract ZIP files.
 
@@ -79,7 +79,7 @@ var decompress = new Decompress()
     .use(Decompress.tar({ strip: 1 }));
 ```
 
-### .tarbz()
+### .tarbz2()
 
 Extract TAR.BZ files.
 
@@ -87,7 +87,7 @@ Extract TAR.BZ files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-    .use(Decompress.tarbz({ strip: 1 }));
+    .use(Decompress.tarbz2({ strip: 1 }));
 ```
 
 ### .targz()
