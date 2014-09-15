@@ -84,7 +84,7 @@ Decompress.prototype.run = function (cb) {
 
     var pipe = combine(this.streams);
     var end = concat(function (file) {
-        cb(null, file);
+        cb(null, file, pipe);
     });
 
     pipe.on('error', function (err) {
