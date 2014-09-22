@@ -27,17 +27,20 @@ var opts = nopt({
  */
 
 function help() {
-	console.log(pkg.description);
-	console.log('');
-	console.log('Usage');
-	console.log('  $ decompress <file> [directory]');
-	console.log('');
-	console.log('Example');
-	console.log('  $ decompress --strip 1 file.zip out');
-	console.log('');
-	console.log('Options');
-	console.log('  -m, --mode     Set mode on the extracted files');
-	console.log('  -s, --strip    Equivalent to --strip-components for tar');
+	console.log([
+		'',
+		'  ' + pkg.description,
+		'',
+		'  Usage',
+		'    decompress <file> [directory]',
+		'',
+		'  Example',
+		'    decompress --strip 1 file.zip out',
+		'',
+		'  Options',
+		'    -m, --mode     Set mode on the extracted files',
+		'    -s, --strip    Equivalent to --strip-components for tar'
+	].join('\n'));
 }
 
 /**
