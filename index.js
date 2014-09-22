@@ -14,13 +14,13 @@ var through = require('through2');
  */
 
 function Decompress(opts) {
-    if (!(this instanceof Decompress)) {
-        return new Decompress();
-    }
+	if (!(this instanceof Decompress)) {
+		return new Decompress();
+	}
 
-    this.opts = opts || {};
-    this.opts.mode = parseInt(this.opts.mode, 8) || null;
-    this.streams = [];
+	this.opts = opts || {};
+	this.opts.mode = parseInt(this.opts.mode, 8) || null;
+	this.streams = [];
 }
 
 /**
@@ -31,12 +31,12 @@ function Decompress(opts) {
  */
 
 Decompress.prototype.src = function (file) {
-    if (!arguments.length) {
-        return this._src;
-    }
+	if (!arguments.length) {
+		return this._src;
+	}
 
-    this._src = file;
-    return this;
+	this._src = file;
+	return this;
 };
 
 /**
@@ -47,12 +47,12 @@ Decompress.prototype.src = function (file) {
  */
 
 Decompress.prototype.dest = function (dir) {
-    if (!arguments.length) {
-        return this._dest;
-    }
+	if (!arguments.length) {
+		return this._dest;
+	}
 
-    this._dest = dir;
-    return this;
+	this._dest = dir;
+	return this;
 };
 
 /**
@@ -63,8 +63,8 @@ Decompress.prototype.dest = function (dir) {
  */
 
 Decompress.prototype.use = function (plugin) {
-    this.streams.push(plugin);
-    return this;
+	this.streams.push(plugin);
+	return this;
 };
 
 /**
@@ -75,24 +75,24 @@ Decompress.prototype.use = function (plugin) {
  */
 
 Decompress.prototype.run = function (cb) {
-    cb = cb || function () {};
-    this.streams.unshift(this.read(this.src()));
+	cb = cb || function () {};
+	this.streams.unshift(this.read(this.src()));
 
-    if (this.dest()) {
-        this.streams.push(fs.dest(this.dest(), this.opts));
-    }
+	if (this.dest()) {
+		this.streams.push(fs.dest(this.dest(), this.opts));
+	}
 
-    var pipe = combine(this.streams);
-    var end = concat(function (file) {
-        cb(null, file, pipe);
-    });
+	var pipe = combine(this.streams);
+	var end = concat(function (file) {
+		cb(null, file, pipe);
+	});
 
-    pipe.on('error', function (err) {
-        cb(err);
-        return;
-    });
+	pipe.on('error', function (err) {
+		cb(err);
+		return;
+	});
 
-    pipe.pipe(end);
+	pipe.pipe(end);
 };
 
 /**
@@ -103,19 +103,19 @@ Decompress.prototype.run = function (cb) {
  */
 
 Decompress.prototype.read = function (src) {
-    if (Buffer.isBuffer(src)) {
-        var stream = through.obj(function (file, enc, cb) {
-            cb(null, file);
-        });
+	if (Buffer.isBuffer(src)) {
+		var stream = through.obj(function (file, enc, cb) {
+			cb(null, file);
+		});
 
-        stream.end(new File({
-            contents: src
-        }));
+		stream.end(new File({
+			contents: src
+		}));
 
-        return stream;
-    }
+		return stream;
+	}
 
-    return fs.src(src);
+	return fs.src(src);
 };
 
 /**

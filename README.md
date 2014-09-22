@@ -14,16 +14,16 @@ $ npm install --save decompress
 var Decompress = require('decompress');
 
 var decompress = new Decompress({ mode: 755 })
-    .src('foo.zip')
-    .dest('destFolder')
-    .use(Decompress.zip({ strip: 1 }));
+	.src('foo.zip')
+	.dest('destFolder')
+	.use(Decompress.zip({ strip: 1 }));
 
 decompress.run(function (err) {
-    if (err) {
-        throw err;
-    }
+	if (err) {
+		throw err;
+	}
 
-    console.log('Archive extracted successfully!');
+	console.log('Archive extracted successfully!');
 });
 ```
 
@@ -76,7 +76,7 @@ Extract TAR files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-    .use(Decompress.tar({ strip: 1 }));
+	.use(Decompress.tar({ strip: 1 }));
 ```
 
 ### .tarbz2()
@@ -87,7 +87,7 @@ Extract TAR.BZ files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-    .use(Decompress.tarbz2({ strip: 1 }));
+	.use(Decompress.tarbz2({ strip: 1 }));
 ```
 
 ### .targz()
@@ -98,7 +98,7 @@ Extract TAR.GZ files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-    .use(Decompress.targz({ strip: 1 }));
+	.use(Decompress.targz({ strip: 1 }));
 ```
 
 ### .zip()
@@ -109,7 +109,7 @@ Extract ZIP files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-    .use(Decompress.zip({ strip: 1 }));
+	.use(Decompress.zip({ strip: 1 }));
 ```
 
 ## CLI
