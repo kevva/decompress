@@ -54,10 +54,10 @@ Extract your file with the given settings.
 
 ### mode
 
-Type: `Number`  
+Type: `Number|String`  
 Default: `null`
 
-Set mode on the extracted files.
+Set mode on the extracted files, i.e `{ mode: 755 }`.
 
 ## Plugins
 
