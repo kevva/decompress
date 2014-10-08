@@ -5,6 +5,7 @@ var Decompress = require('./');
 var fs = require('fs');
 var nopt = require('nopt');
 var pkg = require('./package.json');
+var stdin = require('get-stdin');
 
 /**
  * Options
@@ -33,9 +34,11 @@ function help() {
 		'',
 		'  Usage',
 		'    decompress <file> [directory]',
+		'    cat <file> | decompress [directory]',
 		'',
 		'  Example',
 		'    decompress --strip 1 file.zip out',
+		'    cat file.zip | decompress out',
 		'',
 		'  Options',
 		'    -m, --mode     Set mode on the extracted files',
@@ -108,17 +111,31 @@ function run(src, dest) {
  * Apply arguments
  */
 
-var src = opts.argv.remain;
-var dest = process.cwd();
+if (process.stdin.isTTY) {
+	var src = opts.argv.remain;
+	var dest = process.cwd();
 
-if (!src.length) {
-	help();
-	return;
+	if (!src.length) {
+		help();
+		return;
+	}
+
+	if (!isFile(src[src.length - 1])) {
+		dest = src[src.length - 1];
+		src.pop();
+	}
+
+	run(src, dest);
+} else {
+	var dest = opts.argv.remain;
+
+	if (dest.length && !isFile(dest[dest.length - 1])) {
+		dest = dest[dest.length - 1];
+	} else {
+		dest = process.cwd();
+	}
+
+	stdin.buffer(function (buf) {
+		run(buf, dest);
+	});
 }
-
-if (!isFile(src[src.length - 1])) {
-	dest = src[src.length - 1];
-	src.pop();
-}
-
-run(src, dest);

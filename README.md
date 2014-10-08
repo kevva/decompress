@@ -122,10 +122,12 @@ $ npm install --global decompress
 $ decompress --help
 
 Usage
-  $ decompress <file> [directory]
+  decompress <file> [directory]
+  cat <file> | decompress [directory]
 
 Example
-  $ decompress --strip 1 file.zip out
+  decompress --strip 1 file.zip out
+  cat file.zip | decompress out
 
 Options
   -m, --mode     Set mode on the extracted files
