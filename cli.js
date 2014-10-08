@@ -96,6 +96,7 @@ function run(src, dest) {
 		.src(src)
 		.dest(dest)
 		.use(Decompress.tar(opts))
+		.use(Decompress.tarbz2(opts))
 		.use(Decompress.targz(opts))
 		.use(Decompress.zip(opts));
 
