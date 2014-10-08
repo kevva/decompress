@@ -47,6 +47,7 @@
     "vinyl-fs": "^0.3.7"
   },
   "devDependencies": {
-    "ava": "0.0.4"
+    "ava": "0.0.4",
+    "rimraf": "^2.2.8"
   }
 }
