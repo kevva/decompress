@@ -3,35 +3,15 @@
 
 var Decompress = require('./');
 var fs = require('fs');
-var nopt = require('nopt');
-var pkg = require('./package.json');
+var meow = require('meow');
 var stdin = require('get-stdin');
 
 /**
- * Options
+ * Initialize CLI
  */
 
-var opts = nopt({
-	help: Boolean,
-	mode: Number,
-	strip: String,
-	version: Boolean
-}, {
-	h: '--help',
-	m: '--mode',
-	s: '--strip',
-	v: '--version'
-});
-
-/**
- * Help screen
- */
-
-function help() {
-	console.log([
-		'',
-		'  ' + pkg.description,
-		'',
+var cli = meow({
+	help: [
 		'  Usage',
 		'    decompress <file> [directory]',
 		'    cat <file> | decompress [directory]',
@@ -43,26 +23,17 @@ function help() {
 		'  Options',
 		'    -m, --mode     Set mode on the extracted files',
 		'    -s, --strip    Equivalent to --strip-components for tar'
-	].join('\n'));
-}
-
-/**
- * Show help
- */
-
-if (opts.help) {
-	help();
-	return;
-}
-
-/**
- * Show package version
- */
-
-if (opts.version) {
-	console.log(pkg.version);
-	return;
-}
+	].join('\n')
+}, {
+	string: [
+		'mode',
+		'strip'
+	],
+	alias: {
+		m: 'mode',
+		s: 'strip'
+	}
+});
 
 /**
  * Check if path is a file
@@ -88,10 +59,11 @@ function isFile(path) {
  *
  * @param {String} src
  * @param {String} dest
+ * @param {Object} opts
  * @api private
  */
 
-function run(src, dest) {
+function run(src, dest, opts) {
 	var decompress = new Decompress(opts)
 		.src(src)
 		.dest(dest)
@@ -113,22 +85,17 @@ function run(src, dest) {
  */
 
 if (process.stdin.isTTY) {
-	var src = opts.argv.remain;
+	var src = cli.input;
 	var dest = process.cwd();
-
-	if (!src.length) {
-		help();
-		return;
-	}
 
 	if (!isFile(src[src.length - 1])) {
 		dest = src[src.length - 1];
 		src.pop();
 	}
 
-	run(src, dest);
+	run(src, dest, cli.flags);
 } else {
-	var dest = opts.argv.remain;
+	var dest = cli.input;
 
 	if (dest.length && !isFile(dest[dest.length - 1])) {
 		dest = dest[dest.length - 1];
@@ -137,6 +104,6 @@ if (process.stdin.isTTY) {
 	}
 
 	stdin.buffer(function (buf) {
-		run(buf, dest);
+		run(buf, dest, cli.flags);
 	});
 }
