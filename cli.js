@@ -11,6 +11,7 @@ var stdin = require('get-stdin');
  */
 
 var cli = meow({
+	requireInput: process.stdin.isTTY,
 	help: [
 		'  Usage',
 		'    decompress <file> [directory]',
