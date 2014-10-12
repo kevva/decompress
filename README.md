@@ -1,6 +1,6 @@
 # decompress [![Build Status](http://img.shields.io/travis/kevva/decompress.svg?style=flat)](https://travis-ci.org/kevva/decompress)
 
-> Easily extract archives
+> Extracting archives made easy
 
 ## Install
 
@@ -35,20 +35,32 @@ Creates a new `Decompress` instance.
 
 ### .src(files)
 
-Set the files to be decompress. Takes a buffer, glob string or an array of glob 
-strings as argument.
+Type: `Array|Buffer|String`
+
+Set the files to be extracted.
 
 ### .dest(path)
+
+Type: `String`
 
 Set the destination to where your file will be extracted to.
 
 ### .use(plugin)
 
+Type: `Function`
+
 Add a `plugin` to the middleware stack.
 
 ### .run(cb)
 
+Type: `Function`
+
 Extract your file with the given settings.
+
+#### cb(err, files, stream)
+
+The callback will return an array of vinyl files in `files` and a Readable/Writable 
+stream in `stream`.
 
 ## Options
 
