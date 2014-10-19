@@ -19,7 +19,6 @@ function Decompress(opts) {
 	}
 
 	this.opts = opts || {};
-	this.opts.mode = parseInt(this.opts.mode, 8) || null;
 	this.streams = [];
 }
 

@@ -13,7 +13,7 @@ $ npm install --save decompress
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress({ mode: 755 })
+var decompress = new Decompress({ mode: '755' })
 	.src('foo.zip')
 	.dest('destFolder')
 	.use(Decompress.zip({ strip: 1 }));
@@ -66,10 +66,15 @@ stream in `stream`.
 
 ### mode
 
-Type: `Number|String`  
-Default: `null`
+Type: `String`  
 
-Set mode on the extracted files, i.e `{ mode: 755 }`.
+Set mode on the extracted files, i.e `{ mode: '755' }`.
+
+### strip
+
+Type: `Number`  
+
+Equivalent to `--strip-components` for tar.
 
 ## Plugins
 
