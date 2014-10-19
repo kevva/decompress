@@ -86,11 +86,7 @@ Decompress.prototype.run = function (cb) {
 		cb(null, file, pipe);
 	});
 
-	pipe.on('error', function (err) {
-		cb(err);
-		return;
-	});
-
+	pipe.on('error', cb);
 	pipe.pipe(end);
 };
 
@@ -103,9 +99,7 @@ Decompress.prototype.run = function (cb) {
 
 Decompress.prototype.read = function (src) {
 	if (Buffer.isBuffer(src)) {
-		var stream = through.obj(function (file, enc, cb) {
-			cb(null, file);
-		});
+		var stream = through.obj();
 
 		stream.end(new File({
 			contents: src
