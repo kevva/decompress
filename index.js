@@ -15,7 +15,7 @@ var through = require('through2');
 
 function Decompress(opts) {
 	if (!(this instanceof Decompress)) {
-		return new Decompress();
+		return new Decompress(opts);
 	}
 
 	this.opts = opts || {};
