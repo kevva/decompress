@@ -15,7 +15,7 @@ test('extract .tar', function (t) {
 		.use(Decompress.tar());
 
 	decompress.run(function (err, files) {
-		t.assert(!err);
+		t.assert(!err, err);
 		t.assert(files[0].path === 'test.jpg');
 	});
 });
@@ -28,7 +28,7 @@ test('extract .tar.bz2', function (t) {
 		.use(Decompress.tarbz2());
 
 	decompress.run(function (err, files) {
-		t.assert(!err);
+		t.assert(!err, err);
 		t.assert(files[0].path === 'test.jpg');
 	});
 });
@@ -41,7 +41,7 @@ test('extract .tar.gz', function (t) {
 		.use(Decompress.targz());
 
 	decompress.run(function (err, files) {
-		t.assert(!err);
+		t.assert(!err, err);
 		t.assert(files[0].path === 'test.jpg');
 	});
 });
@@ -54,7 +54,7 @@ test('extract .zip', function (t) {
 		.use(Decompress.zip());
 
 	decompress.run(function (err, files) {
-		t.assert(!err);
+		t.assert(!err, err);
 		t.assert(files[0].path === 'test.jpg');
 	});
 });
@@ -67,7 +67,7 @@ test('extract using the strip option', function (t) {
 		.use(Decompress.zip({ strip: 1 }));
 
 	decompress.run(function (err, files) {
-		t.assert(!err);
+		t.assert(!err, err);
 		t.assert(files[0].path === 'test-strip.jpg');
 	});
 });
@@ -86,7 +86,7 @@ test('extract from stdin using the CLI', function (t) {
 			t.assert(exists);
 
 			rm(tmp, function (err) {
-				t.assert(!err);
+				t.assert(!err, err);
 			});
 		});
 	});
