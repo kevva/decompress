@@ -75,6 +75,14 @@ Decompress.prototype.use = function (plugin) {
 
 Decompress.prototype.run = function (cb) {
 	cb = cb || function () {};
+
+	if (!this.streams.length) {
+		this.use(Decompress.tar(this.opts));
+		this.use(Decompress.tarbz2(this.opts));
+		this.use(Decompress.targz(this.opts));
+		this.use(Decompress.zip(this.opts));
+	}
+
 	this.streams.unshift(this.read(this.src()));
 
 	if (this.dest()) {
