@@ -11,19 +11,18 @@ var stdin = require('get-stdin');
  */
 
 var cli = meow({
-	requireInput: process.stdin.isTTY,
 	help: [
-		'  Usage',
-		'    decompress <file> [directory]',
-		'    cat <file> | decompress [directory]',
+		'Usage',
+		'  decompress <file> [directory]',
+		'  cat <file> | decompress [directory]',
 		'',
-		'  Example',
-		'    decompress --strip 1 file.zip out',
-		'    cat file.zip | decompress out',
+		'Example',
+		'  decompress --strip 1 file.zip out',
+		'  cat file.zip | decompress out',
 		'',
-		'  Options',
-		'    -m, --mode     Set mode on the extracted files',
-		'    -s, --strip    Equivalent to --strip-components for tar'
+		'Options',
+		'  -m, --mode     Set mode on the extracted files',
+		'  -s, --strip    Equivalent to --strip-components for tar'
 	].join('\n')
 }, {
 	string: [
@@ -88,6 +87,18 @@ function run(src, dest, opts) {
 if (process.stdin.isTTY) {
 	var src = cli.input;
 	var dest = process.cwd();
+
+	if (!src.length) {
+		console.error([
+			'Specify a file to decompress',
+			'',
+			'Example',
+			'  decompress --strip 1 file.zip out',
+			'  cat file.zip | decompress out'
+		].join('\n'));
+
+		process.exit(1);
+	}
 
 	if (!isFile(src[src.length - 1])) {
 		dest = src[src.length - 1];
