@@ -96,6 +96,8 @@ Decompress.prototype.run = function (cb) {
 
 	pipe.on('error', cb);
 	pipe.pipe(end);
+
+	return pipe;
 };
 
 /**

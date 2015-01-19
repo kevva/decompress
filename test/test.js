@@ -1,5 +1,6 @@
 'use strict';
 
+var concat = require('concat-stream');
 var Decompress = require('../');
 var fs = require('fs');
 var path = require('path');
@@ -92,4 +93,16 @@ test('extract from stdin using the CLI', function (t) {
 	});
 
 	src.pipe(cli.stdin);
+});
+
+test('extract .zip and pipe the extracted files', function (t) {
+	t.plan(1);
+
+	var decompress = new Decompress()
+		.src(path.join(__dirname, 'fixtures/test.zip'))
+		.use(Decompress.zip());
+
+	decompress.run().pipe(concat(function (files) {
+		t.assert(files);
+	}));
 });
