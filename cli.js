@@ -6,10 +6,6 @@ var fs = require('fs');
 var meow = require('meow');
 var stdin = require('get-stdin');
 
-/**
- * Initialize CLI
- */
-
 var cli = meow({
 	help: [
 		'Usage',
@@ -35,13 +31,6 @@ var cli = meow({
 	}
 });
 
-/**
- * Check if path is a file
- *
- * @param {String} path
- * @api private
- */
-
 function isFile(path) {
 	if (/^[^\s]+\.\w*$/g.test(path)) {
 		return true;
@@ -53,15 +42,6 @@ function isFile(path) {
 		return false;
 	}
 }
-
-/**
- * Run
- *
- * @param {String} src
- * @param {String} dest
- * @param {Object} opts
- * @api private
- */
 
 function run(src, dest, opts) {
 	var decompress = new Decompress(opts)
@@ -79,10 +59,6 @@ function run(src, dest, opts) {
 		}
 	});
 }
-
-/**
- * Apply arguments
- */
 
 if (process.stdin.isTTY) {
 	var src = cli.input;
