@@ -57,10 +57,9 @@ Type: `Function`
 
 Extract your file with the given settings.
 
-#### cb(err, files, stream)
+#### cb(err, files)
 
-The callback will return an array of vinyl files in `files` and a Readable/Writable 
-stream in `stream`.
+The callback will return an array of vinyl files in `files`.
 
 ## Options
 

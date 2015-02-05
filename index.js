@@ -1,10 +1,9 @@
 'use strict';
 
-var combine = require('stream-combiner');
+var bufferToVinyl = require('buffer-to-vinyl');
+var combine = require('stream-combiner2');
 var concat = require('concat-stream');
-var File = require('vinyl');
-var fs = require('vinyl-fs');
-var through = require('through2');
+var vfs = require('vinyl-fs');
 
 /**
  * Initialize Decompress
@@ -76,49 +75,47 @@ Decompress.prototype.use = function (plugin) {
 Decompress.prototype.run = function (cb) {
 	cb = cb || function () {};
 
-	if (!this.streams.length) {
+	var stream = this.createStream();
+
+	stream.on('error', cb);
+	stream.pipe(concat(cb.bind(null, null)));
+};
+
+/**
+ * Create stream
+ *
+ * @api private
+ */
+
+Decompress.prototype.createStream = function () {
+	this.streams.unshift(this.getFiles());
+
+	if (this.streams.length === 1) {
 		this.use(Decompress.tar(this.opts));
 		this.use(Decompress.tarbz2(this.opts));
 		this.use(Decompress.targz(this.opts));
 		this.use(Decompress.zip(this.opts));
 	}
 
-	this.streams.unshift(this.read(this.src()));
-
 	if (this.dest()) {
-		this.streams.push(fs.dest(this.dest(), this.opts));
+		this.streams.push(vfs.dest(this.dest()));
 	}
 
-	var pipe = combine(this.streams);
-	var end = concat(function (file) {
-		cb(null, file, pipe);
-	});
-
-	pipe.on('error', cb);
-	pipe.pipe(end);
-
-	return pipe;
+	return combine(this.streams);
 };
 
 /**
- * Read the source files
+ * Get files
  *
- * @param {Array|Buffer|String} src
  * @api private
  */
 
-Decompress.prototype.read = function (src) {
-	if (Buffer.isBuffer(src)) {
-		var stream = through.obj();
-
-		stream.end(new File({
-			contents: src
-		}));
-
-		return stream;
+Decompress.prototype.getFiles = function () {
+	if (Buffer.isBuffer(this.src())) {
+		return bufferToVinyl.stream(this.src());
 	}
 
-	return fs.src(src);
+	return vfs.src(this.src());
 };
 
 /**

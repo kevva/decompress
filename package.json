@@ -34,6 +34,7 @@
     "unzip"
   ],
   "dependencies": {
+    "buffer-to-vinyl": "^1.0.0",
     "concat-stream": "^1.4.6",
     "decompress-tar": "^2.0.0",
     "decompress-tarbz2": "^2.0.0",
@@ -41,13 +42,11 @@
     "decompress-unzip": "^2.0.0",
     "get-stdin": "^3.0.0",
     "meow": "^2.0.0",
-    "stream-combiner": "^0.2.1",
-    "through2": "^0.6.1",
-    "vinyl": "^0.4.3",
+    "stream-combiner2": "^1.0.2",
     "vinyl-fs": "^0.3.7"
   },
   "devDependencies": {
-    "ava": "0.0.4",
+    "ava": "^0.0.4",
     "rimraf": "^2.2.8"
   }
 }
