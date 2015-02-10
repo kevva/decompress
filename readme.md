@@ -13,10 +13,10 @@ $ npm install --save decompress
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress({ mode: '755' })
+var decompress = new Decompress({mode: '755'})
 	.src('foo.zip')
 	.dest('destFolder')
-	.use(Decompress.zip({ strip: 1 }));
+	.use(Decompress.zip({strip: 1}));
 
 decompress.run(function (err) {
 	if (err) {
@@ -33,7 +33,21 @@ decompress.run(function (err) {
 
 Creates a new `Decompress` instance.
 
+#### opts.mode
+
+Type: `String`
+
+Set mode on the extracted files, i.e `{ mode: '755' }`.
+
+#### opts.strip
+
+Type: `Number`
+
+Equivalent to `--strip-components` for tar.
+
 ### .src(files)
+
+#### files
 
 Type: `Array|Buffer|String`
 
@@ -41,11 +55,15 @@ Set the files to be extracted.
 
 ### .dest(path)
 
+#### path
+
 Type: `String`
 
 Set the destination to where your file will be extracted to.
 
 ### .use(plugin)
+
+#### plugin
 
 Type: `Function`
 
@@ -53,27 +71,13 @@ Add a `plugin` to the middleware stack.
 
 ### .run(cb)
 
-Type: `Function`
-
 Extract your file with the given settings.
 
 #### cb(err, files)
 
+Type: `Function`
+
 The callback will return an array of vinyl files in `files`.
-
-## Options
-
-### mode
-
-Type: `String`  
-
-Set mode on the extracted files, i.e `{ mode: '755' }`.
-
-### strip
-
-Type: `Number`  
-
-Equivalent to `--strip-components` for tar.
 
 ## Plugins
 
@@ -92,7 +96,7 @@ Extract TAR files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-	.use(Decompress.tar({ strip: 1 }));
+	.use(Decompress.tar({strip: 1}));
 ```
 
 ### .tarbz2()
@@ -103,7 +107,7 @@ Extract TAR.BZ files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-	.use(Decompress.tarbz2({ strip: 1 }));
+	.use(Decompress.tarbz2({strip: 1}));
 ```
 
 ### .targz()
@@ -114,7 +118,7 @@ Extract TAR.GZ files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-	.use(Decompress.targz({ strip: 1 }));
+	.use(Decompress.targz({strip: 1}));
 ```
 
 ### .zip()
@@ -125,12 +129,12 @@ Extract ZIP files.
 var Decompress = require('decompress');
 
 var decompress = new Decompress()
-	.use(Decompress.zip({ strip: 1 }));
+	.use(Decompress.zip({strip: 1}));
 ```
 
 ## CLI
 
-```bash
+```sh
 $ npm install --global decompress
 ```
 
@@ -138,12 +142,12 @@ $ npm install --global decompress
 $ decompress --help
 
 Usage
-  decompress <file> [directory]
-  cat <file> | decompress [directory]
+  $ decompress <file> [directory]
+  $ cat <file> | decompress [directory]
 
 Example
-  decompress --strip 1 file.zip out
-  cat file.zip | decompress out
+  $ decompress --strip 1 file.zip out
+  $ cat file.zip | decompress out
 
 Options
   -m, --mode     Set mode on the extracted files
