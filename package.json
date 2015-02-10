@@ -40,8 +40,8 @@
     "decompress-tarbz2": "^2.0.0",
     "decompress-targz": "^2.0.0",
     "decompress-unzip": "^2.0.0",
-    "get-stdin": "^3.0.0",
-    "meow": "^2.0.0",
+    "get-stdin": "^4.0.1",
+    "meow": "^3.0.0",
     "stream-combiner2": "^1.0.2",
     "vinyl-fs": "^0.3.7"
   },
