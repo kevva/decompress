@@ -92,7 +92,7 @@ Decompress.prototype.createStream = function () {
 	this.streams.unshift(vinylAssign({extract: true}));
 	this.streams.unshift(this.getFiles());
 
-	if (this.streams.length === 1) {
+	if (this.streams.length === 2) {
 		this.use(Decompress.tar(this.opts));
 		this.use(Decompress.tarbz2(this.opts));
 		this.use(Decompress.targz(this.opts));
