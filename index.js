@@ -4,6 +4,7 @@ var bufferToVinyl = require('buffer-to-vinyl');
 var combine = require('stream-combiner2');
 var concat = require('concat-stream');
 var vfs = require('vinyl-fs');
+var vinylAssign = require('vinyl-assign');
 
 /**
  * Initialize Decompress
@@ -88,6 +89,7 @@ Decompress.prototype.run = function (cb) {
  */
 
 Decompress.prototype.createStream = function () {
+	this.streams.unshift(vinylAssign({extract: true}));
 	this.streams.unshift(this.getFiles());
 
 	if (this.streams.length === 1) {

@@ -68,3 +68,17 @@ test('extract using the strip option', function (t) {
 		t.assert(files[0].path === 'test-strip.jpg');
 	});
 });
+
+test('do not extract nested archives', function (t) {
+	t.plan(2);
+
+	var decompress = new Decompress()
+		.src(path.join(__dirname, 'fixtures/test-nested.tar.gz'))
+		.use(Decompress.targz())
+		.use(Decompress.zip());
+
+	decompress.run(function (err, files) {
+		t.assert(!err, err);
+		t.assert(files[0].path === 'test.zip');
+	});
+});
