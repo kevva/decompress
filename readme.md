@@ -2,46 +2,42 @@
 
 > Extracting archives made easy
 
+
 ## Install
 
-```sh
+```
 $ npm install --save decompress
 ```
+
 
 ## Usage
 
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress({mode: '755'})
+new Decompress({mode: '755'})
 	.src('foo.zip')
-	.dest('destFolder')
-	.use(Decompress.zip({strip: 1}));
-
-decompress.run(function (err) {
-	if (err) {
-		throw err;
-	}
-
-	console.log('Archive extracted successfully!');
-});
+	.dest('dest')
+	.use(Decompress.zip({strip: 1}))
+	.run();
 ```
+
 
 ## API
 
-### new Decompress(opts)
+### new Decompress(options)
 
 Creates a new `Decompress` instance.
 
-#### opts.mode
+#### options.mode
 
-Type: `String`
+Type: `string`
 
 Set mode on the extracted files, i.e `{ mode: '755' }`.
 
-#### opts.strip
+#### options.strip
 
-Type: `Number`
+Type: `number`
 
 Equivalent to `--strip-components` for tar.
 
@@ -49,7 +45,7 @@ Equivalent to `--strip-components` for tar.
 
 #### files
 
-Type: `Array|Buffer|String`
+Type: `array`, `buffer` or `string`
 
 Set the files to be extracted.
 
@@ -57,7 +53,7 @@ Set the files to be extracted.
 
 #### path
 
-Type: `String`
+Type: `string`
 
 Set the destination to where your file will be extracted to.
 
@@ -65,19 +61,20 @@ Set the destination to where your file will be extracted to.
 
 #### plugin
 
-Type: `Function`
+Type: `function`
 
 Add a `plugin` to the middleware stack.
 
-### .run(cb)
+### .run(callback)
 
 Extract your file with the given settings.
 
-#### cb(err, files)
+#### callback(err, files)
 
-Type: `Function`
+Type: `function`
 
 The callback will return an array of vinyl files in `files`.
+
 
 ## Plugins
 
@@ -132,27 +129,29 @@ var decompress = new Decompress()
 	.use(Decompress.zip({strip: 1}));
 ```
 
+
 ## CLI
 
-```sh
+```
 $ npm install --global decompress
 ```
 
-```sh
+```
 $ decompress --help
 
-Usage
-  $ decompress <file> [directory]
-  $ cat <file> | decompress [directory]
+  Usage
+    $ decompress <file> [directory]
+    $ cat <file> | decompress [directory]
 
-Example
-  $ decompress --strip 1 file.zip out
-  $ cat file.zip | decompress out
+  Example
+    $ decompress --strip 1 file.zip out
+    $ cat file.zip | decompress out
 
-Options
-  -m, --mode     Set mode on the extracted files
-  -s, --strip    Equivalent to --strip-components for tar
+  Options
+    -m, --mode     Set mode on the extracted files
+    -s, --strip    Equivalent to --strip-components for tar
 ```
+
 
 ## License
 

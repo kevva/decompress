@@ -1,8 +1,8 @@
 'use strict';
 
-var Decompress = require('../');
 var path = require('path');
 var test = require('ava');
+var Decompress = require('../');
 
 test('extract .tar', function (t) {
 	t.plan(2);
@@ -61,7 +61,7 @@ test('extract using the strip option', function (t) {
 
 	var decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-strip.zip'))
-		.use(Decompress.zip({ strip: 1 }));
+		.use(Decompress.zip({strip: 1}));
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);

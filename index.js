@@ -1,9 +1,9 @@
 'use strict';
 
 var bufferToVinyl = require('buffer-to-vinyl');
-var combine = require('stream-combiner2');
-var concat = require('concat-stream');
-var vfs = require('vinyl-fs');
+var streamCombiner = require('stream-combiner2');
+var concatStream = require('concat-stream');
+var vinylFs = require('vinyl-fs');
 var vinylAssign = require('vinyl-assign');
 
 /**
@@ -79,7 +79,7 @@ Decompress.prototype.run = function (cb) {
 	var stream = this.createStream();
 
 	stream.on('error', cb);
-	stream.pipe(concat(cb.bind(null, null)));
+	stream.pipe(concatStream(cb.bind(null, null)));
 };
 
 /**
@@ -100,10 +100,10 @@ Decompress.prototype.createStream = function () {
 	}
 
 	if (this.dest()) {
-		this.streams.push(vfs.dest(this.dest()));
+		this.streams.push(vinylFs.dest(this.dest()));
 	}
 
-	return combine(this.streams);
+	return streamCombiner(this.streams);
 };
 
 /**
@@ -117,7 +117,7 @@ Decompress.prototype.getFiles = function () {
 		return bufferToVinyl.stream(this.src());
 	}
 
-	return vfs.src(this.src());
+	return vinylFs.src(this.src());
 };
 
 /**

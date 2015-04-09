@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 'use strict';
 
-var Decompress = require('./');
 var fs = require('fs');
 var meow = require('meow');
-var stdin = require('get-stdin');
+var getStdin = require('get-stdin');
+var Decompress = require('./');
 
 var cli = meow({
 	help: [
@@ -91,7 +91,7 @@ if (process.stdin.isTTY) {
 		dest = process.cwd();
 	}
 
-	stdin.buffer(function (buf) {
+	getStdin.buffer(function (buf) {
 		run(buf, dest, cli.flags);
 	});
 }
