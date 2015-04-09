@@ -13,7 +13,7 @@ test('extract .tar', function (t) {
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);
-		t.assert(files[0].path === 'test.jpg');
+		t.assert(files[0].path === 'test.jpg', files[0].path);
 	});
 });
 
@@ -26,7 +26,7 @@ test('extract .tar.bz2', function (t) {
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);
-		t.assert(files[0].path === 'test.jpg');
+		t.assert(files[0].path === 'test.jpg', files[0].path);
 	});
 });
 
@@ -39,7 +39,7 @@ test('extract .tar.gz', function (t) {
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);
-		t.assert(files[0].path === 'test.jpg');
+		t.assert(files[0].path === 'test.jpg', files[0].path);
 	});
 });
 
@@ -52,7 +52,7 @@ test('extract .zip', function (t) {
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);
-		t.assert(files[0].path === 'test.jpg');
+		t.assert(files[0].path === 'test.jpg', files[0].path);
 	});
 });
 
@@ -65,7 +65,7 @@ test('extract using the strip option', function (t) {
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);
-		t.assert(files[0].path === 'test-strip.jpg');
+		t.assert(files[0].path === 'test-strip.jpg', files[0].path);
 	});
 });
 
@@ -79,6 +79,6 @@ test('do not extract nested archives', function (t) {
 
 	decompress.run(function (err, files) {
 		t.assert(!err, err);
-		t.assert(files[0].path === 'test.zip');
+		t.assert(files[0].path === 'test.zip', files[0].path);
 	});
 });
