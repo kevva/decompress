@@ -85,47 +85,47 @@ The following [plugins](https://www.npmjs.org/browse/keyword/decompressplugin) a
 * [tar.gz](#targz) — Extract TAR.GZ files.
 * [zip](#zip) — Extract ZIP files.
 
-### .tar()
+### .tar(options)
 
 Extract TAR files.
 
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress()
+new Decompress()
 	.use(Decompress.tar({strip: 1}));
 ```
 
-### .tarbz2()
+### .tarbz2(options)
 
 Extract TAR.BZ files.
 
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress()
+new Decompress()
 	.use(Decompress.tarbz2({strip: 1}));
 ```
 
-### .targz()
+### .targz(options)
 
 Extract TAR.GZ files.
 
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress()
+new Decompress()
 	.use(Decompress.targz({strip: 1}));
 ```
 
-### .zip()
+### .zip(options)
 
 Extract ZIP files.
 
 ```js
 var Decompress = require('decompress');
 
-var decompress = new Decompress()
+new Decompress()
 	.use(Decompress.zip({strip: 1}));
 ```
 
