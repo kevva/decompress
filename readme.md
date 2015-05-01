@@ -1,4 +1,4 @@
-# decompress [![Build Status](http://img.shields.io/travis/kevva/decompress.svg?style=flat)](https://travis-ci.org/kevva/decompress)
+# decompress [![Build Status](https://travis-ci.org/kevva/decompress.svg?branch=master)](https://travis-ci.org/kevva/decompress)
 
 > Extracting archives made easy
 
