@@ -2,6 +2,7 @@
 
 > Extracting archives made easy
 
+*See [decompress-cli](https://github.com/kevva/decompress-cli) for the command-line version.*
 
 ## Install
 
@@ -127,29 +128,6 @@ var Decompress = require('decompress');
 
 new Decompress()
 	.use(Decompress.zip({strip: 1}));
-```
-
-
-## CLI
-
-```
-$ npm install --global decompress
-```
-
-```
-$ decompress --help
-
-  Usage
-    $ decompress <file> [directory]
-    $ cat <file> | decompress [directory]
-
-  Example
-    $ decompress --strip 1 file.zip out
-    $ cat file.zip | decompress out
-
-  Options
-    -m, --mode     Set mode on the extracted files
-    -s, --strip    Equivalent to --strip-components for tar
 ```
 
 
