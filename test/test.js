@@ -1,5 +1,4 @@
 'use strict';
-
 var path = require('path');
 var test = require('ava');
 var Decompress = require('../');

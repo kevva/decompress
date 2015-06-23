@@ -1,5 +1,4 @@
 'use strict';
-
 var bufferToVinyl = require('buffer-to-vinyl');
 var streamCombiner = require('stream-combiner2');
 var concatStream = require('concat-stream');
