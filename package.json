@@ -38,7 +38,7 @@
     "decompress-unzip": "^3.0.0",
     "stream-combiner2": "^1.1.1",
     "vinyl-assign": "^1.0.1",
-    "vinyl-fs": "^1.0.0"
+    "vinyl-fs": "^2.2.0"
   },
   "devDependencies": {
     "ava": "0.2.0",
