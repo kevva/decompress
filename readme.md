@@ -14,7 +14,7 @@ $ npm install --save decompress
 ## Usage
 
 ```js
-var Decompress = require('decompress');
+const Decompress = require('decompress');
 
 new Decompress({mode: '755'})
 	.src('foo.zip')
@@ -91,7 +91,7 @@ The following [plugins](https://www.npmjs.org/browse/keyword/decompressplugin) a
 Extract TAR files.
 
 ```js
-var Decompress = require('decompress');
+const Decompress = require('decompress');
 
 new Decompress()
 	.use(Decompress.tar({strip: 1}));
@@ -102,7 +102,7 @@ new Decompress()
 Extract TAR.BZ files.
 
 ```js
-var Decompress = require('decompress');
+const Decompress = require('decompress');
 
 new Decompress()
 	.use(Decompress.tarbz2({strip: 1}));
@@ -113,7 +113,7 @@ new Decompress()
 Extract TAR.GZ files.
 
 ```js
-var Decompress = require('decompress');
+const Decompress = require('decompress');
 
 new Decompress()
 	.use(Decompress.targz({strip: 1}));
@@ -124,7 +124,7 @@ new Decompress()
 Extract ZIP files.
 
 ```js
-var Decompress = require('decompress');
+const Decompress = require('decompress');
 
 new Decompress()
 	.use(Decompress.zip({strip: 1}));
