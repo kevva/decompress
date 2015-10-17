@@ -1,7 +1,7 @@
 'use strict';
 var bufferToVinyl = require('buffer-to-vinyl');
-var streamCombiner = require('stream-combiner2');
 var concatStream = require('concat-stream');
+var streamCombiner = require('stream-combiner2');
 var vinylFs = require('vinyl-fs');
 var vinylAssign = require('vinyl-assign');
 
@@ -102,7 +102,7 @@ Decompress.prototype.createStream = function () {
 		this.streams.push(vinylFs.dest(this.dest()));
 	}
 
-	return streamCombiner(this.streams);
+	return streamCombiner.obj(this.streams);
 };
 
 /**
