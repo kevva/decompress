@@ -50,6 +50,20 @@ test('extract .zip', t => {
 	});
 });
 
+test('extract .zip including multiple files', t => {
+	const decompress = new Decompress()
+		.src(path.join(__dirname, 'fixtures/test-multiple.zip'))
+		.use(Decompress.zip({strip: 1}));
+
+	decompress.run((err, files) => {
+		t.is(err, null);
+		t.is(files.length, 2);
+		t.is(files[0].path, 'test0.jpg');
+		t.is(files[1].path, 'test1.jpg');
+		t.end();
+	});
+});
+
 test('extract using the strip option', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-strip.zip'))
