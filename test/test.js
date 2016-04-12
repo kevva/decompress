@@ -1,8 +1,17 @@
 import path from 'path';
+import fs from 'fs';
+import os from 'os';
 import test from 'ava';
+import rimraf from 'rimraf';
 import Decompress from '../';
 
-test('extract .tar', t => {
+test.after.cb(t => {
+	rimraf(path.resolve(os.tmpdir(), 'decompress'), () => {
+		t.end();
+	});
+});
+
+test.cb('extract .tar', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.tar'))
 		.use(Decompress.tar());
@@ -14,7 +23,7 @@ test('extract .tar', t => {
 	});
 });
 
-test('extract .tar.bz2', t => {
+test.cb('extract .tar.bz2', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.tar.bz2'))
 		.use(Decompress.tarbz2());
@@ -26,7 +35,7 @@ test('extract .tar.bz2', t => {
 	});
 });
 
-test('extract .tar.gz', t => {
+test.cb('extract .tar.gz', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.tar.gz'))
 		.use(Decompress.targz());
@@ -38,7 +47,7 @@ test('extract .tar.gz', t => {
 	});
 });
 
-test('extract .zip', t => {
+test.cb('extract .zip', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.zip'))
 		.use(Decompress.zip());
@@ -50,7 +59,7 @@ test('extract .zip', t => {
 	});
 });
 
-test('extract .zip including multiple files', t => {
+test.cb('extract .zip including multiple files', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-multiple.zip'))
 		.use(Decompress.zip({strip: 1}));
@@ -64,7 +73,7 @@ test('extract .zip including multiple files', t => {
 	});
 });
 
-test('extract using the strip option', t => {
+test.cb('extract using the strip option', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-strip.zip'))
 		.use(Decompress.zip({strip: 1}));
@@ -76,7 +85,7 @@ test('extract using the strip option', t => {
 	});
 });
 
-test('do not extract nested archives', t => {
+test.cb('do not extract nested archives', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-nested.tar.gz'))
 		.use(Decompress.targz())
@@ -85,6 +94,21 @@ test('do not extract nested archives', t => {
 	decompress.run((err, files) => {
 		t.is(err, null);
 		t.is(files[0].path, 'test.zip');
+		t.end();
+	});
+});
+
+test.cb('set correct permissions with default perms', t => {
+	const decompress = new Decompress({mode: '0755'})
+		.src(path.join(__dirname, 'fixtures/test-no-perms.zip'))
+		.dest(path.resolve(os.tmpdir(), 'decompress/no-perms'))
+		.use(Decompress.targz())
+		.use(Decompress.zip());
+
+	decompress.run((err, files) => {
+		t.is(err, null);
+		let fileMode = fs.lstatSync(files[0].path).mode;
+		t.is((fileMode & parseInt('777', 8)).toString(8), '755');
 		t.end();
 	});
 });
