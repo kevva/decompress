@@ -1,6 +1,15 @@
 import path from 'path';
+import fs from 'fs';
+import os from 'os';
 import test from 'ava';
+import rimraf from 'rimraf';
 import Decompress from '../';
+
+test.after.cb(t => {
+	rimraf(path.resolve(os.tmpdir(), 'decompress'), () => {
+		t.end();
+	});
+});
 
 test.cb('extract .tar', t => {
 	const decompress = new Decompress()
@@ -85,6 +94,21 @@ test.cb('do not extract nested archives', t => {
 	decompress.run((err, files) => {
 		t.is(err, null);
 		t.is(files[0].path, 'test.zip');
+		t.end();
+	});
+});
+
+test.cb('set correct permissions with default perms', t => {
+	const decompress = new Decompress({mode: '0755'})
+		.src(path.join(__dirname, 'fixtures/test-no-perms.zip'))
+		.dest(path.resolve(os.tmpdir(), 'decompress/no-perms'))
+		.use(Decompress.targz())
+		.use(Decompress.zip());
+
+	decompress.run((err, files) => {
+		t.is(err, null);
+		let fileMode = fs.lstatSync(files[0].path).mode;
+		t.is((fileMode & parseInt('777', 8)).toString(8), '755');
 		t.end();
 	});
 });

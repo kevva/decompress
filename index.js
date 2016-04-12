@@ -99,7 +99,9 @@ Decompress.prototype.createStream = function () {
 	}
 
 	if (this.dest()) {
-		this.streams.push(vinylFs.dest(this.dest()));
+		this.streams.push(vinylFs.dest(this.dest(), {
+			mode: this.opts.mode
+		}));
 	}
 
 	return streamCombiner.obj(this.streams);
