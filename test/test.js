@@ -2,7 +2,7 @@ import path from 'path';
 import test from 'ava';
 import Decompress from '../';
 
-test('extract .tar', t => {
+test.cb('extract .tar', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.tar'))
 		.use(Decompress.tar());
@@ -14,7 +14,7 @@ test('extract .tar', t => {
 	});
 });
 
-test('extract .tar.bz2', t => {
+test.cb('extract .tar.bz2', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.tar.bz2'))
 		.use(Decompress.tarbz2());
@@ -26,7 +26,7 @@ test('extract .tar.bz2', t => {
 	});
 });
 
-test('extract .tar.gz', t => {
+test.cb('extract .tar.gz', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.tar.gz'))
 		.use(Decompress.targz());
@@ -38,7 +38,7 @@ test('extract .tar.gz', t => {
 	});
 });
 
-test('extract .zip', t => {
+test.cb('extract .zip', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test.zip'))
 		.use(Decompress.zip());
@@ -50,7 +50,7 @@ test('extract .zip', t => {
 	});
 });
 
-test('extract .zip including multiple files', t => {
+test.cb('extract .zip including multiple files', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-multiple.zip'))
 		.use(Decompress.zip({strip: 1}));
@@ -64,7 +64,7 @@ test('extract .zip including multiple files', t => {
 	});
 });
 
-test('extract using the strip option', t => {
+test.cb('extract using the strip option', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-strip.zip'))
 		.use(Decompress.zip({strip: 1}));
@@ -76,7 +76,7 @@ test('extract using the strip option', t => {
 	});
 });
 
-test('do not extract nested archives', t => {
+test.cb('do not extract nested archives', t => {
 	const decompress = new Decompress()
 		.src(path.join(__dirname, 'fixtures/test-nested.tar.gz'))
 		.use(Decompress.targz())

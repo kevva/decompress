@@ -13,7 +13,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "xo && ava"
+    "test": "./node_modules/.bin/xo && ./node_modules/.bin/ava"
   },
   "files": [
     "index.js"
@@ -41,7 +41,7 @@
     "vinyl-fs": "^2.2.0"
   },
   "devDependencies": {
-    "ava": "0.2.0",
+    "ava": "0.14.0",
     "rimraf": "^2.2.8",
     "xo": "*"
   }
