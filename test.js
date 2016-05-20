@@ -40,7 +40,7 @@ test('extract file using buffer', async t => {
 	t.is(zipFiles[0].path, 'test.jpg');
 });
 
-test('extract file to directory', async t => {
+test.serial('extract file to directory', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), __dirname);
 
 	t.is(files[0].path, 'test.jpg');
@@ -90,6 +90,13 @@ test('map option', async t => {
 	});
 
 	t.is(files[0].path, 'unicorn-test.jpg');
+});
+
+test.serial('set mtime', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), __dirname);
+	const stat = await fsP.stat(path.join(__dirname, 'test.jpg'));
+	t.deepEqual(files[0].mtime, stat.mtime);
+	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
 test('return emptpy array if no plugins are set', async t => {

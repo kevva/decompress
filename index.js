@@ -41,12 +41,15 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 	}
 
 	return Promise.all(files.map(x => {
-		if (x.type === 'directory') {
-			return pify(mkdirp)(path.join(output, x.path)).then(() => x);
-		}
-
 		const dest = path.join(output, x.path);
 		const mode = x.mode & ~process.umask();
+		const now = new Date();
+
+		if (x.type === 'directory') {
+			return pify(mkdirp)(dest)
+				.then(() => fsP.utimes(dest, now, x.mtime))
+				.then(() => x);
+		}
 
 		return pify(mkdirp)(path.dirname(dest))
 			.then(() => {
@@ -60,6 +63,7 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 				return fsP.writeFile(dest, x.data, {mode});
 			})
+			.then(() => x.type === 'file' && fsP.utimes(dest, now, x.mtime))
 			.then(() => x);
 	}));
 });
