@@ -26,6 +26,18 @@ decompress('unicorn.zip', 'dist').then(files => {
 
 ### decompress(input, [output], [options])
 
+Returns a Promise for an array of files in the following format:
+
+```js
+{
+	data: Buffer,
+	mode: Number,
+	mtime: String,
+	path: String,
+	type: String
+}
+```
+
 #### input
 
 Type: `string` `Buffer`
@@ -42,14 +54,14 @@ Output directory.
 
 ##### plugins
 
-Type: `array`  
+Type: `array`<br>
 Default: `[decompressTar(), decompressTarGz(), decompressUnzip()]`
 
 Array of [plugins](https://www.npmjs.com/browse/keyword/decompressplugin) to use.
 
 ##### strip
 
-Type: `number`  
+Type: `number`<br>
 Default: `0`
 
 Remove leading directory components from extracted files.
