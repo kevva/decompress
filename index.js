@@ -1,130 +1,79 @@
 'use strict';
-var bufferToVinyl = require('buffer-to-vinyl');
-var concatStream = require('concat-stream');
-var streamCombiner = require('stream-combiner2');
-var vinylFs = require('vinyl-fs');
-var vinylAssign = require('vinyl-assign');
+const fs = require('fs');
+const path = require('path');
+const decompressTar = require('decompress-tar');
+const decompressTarbz2 = require('decompress-tarbz2');
+const decompressTargz = require('decompress-targz');
+const decompressUnzip = require('decompress-unzip');
+const mkdirp = require('mkdirp');
+const pify = require('pify');
+const stripDirs = require('strip-dirs');
+const fsP = pify(fs);
 
-/**
- * Initialize Decompress
- *
- * @param {Object} opts
- * @api public
- */
-
-function Decompress(opts) {
-	if (!(this instanceof Decompress)) {
-		return new Decompress(opts);
+const runPlugins = (input, opts) => {
+	if (opts.plugins.length === 0) {
+		return Promise.resolve([]);
 	}
 
-	this.opts = opts || {};
-	this.streams = [];
-}
+	return Promise.all(opts.plugins.map(x => x(input, opts))).then(files => files.reduce((a, b) => a.concat(b)));
+};
 
-/**
- * Get or set the source files
- *
- * @param {Array|Buffer|String} file
- * @api public
- */
-
-Decompress.prototype.src = function (file) {
-	if (!arguments.length) {
-		return this._src;
+const extractFile = (input, output, opts) => runPlugins(input, opts).then(files => {
+	if (opts.strip > 0) {
+		files = files
+			.map(x => {
+				x.path = stripDirs(x.path, opts.strip);
+				return x;
+			})
+			.filter(x => x.path !== '.');
 	}
 
-	this._src = file;
-	return this;
-};
-
-/**
- * Get or set the destination folder
- *
- * @param {String} dir
- * @api public
- */
-
-Decompress.prototype.dest = function (dir) {
-	if (!arguments.length) {
-		return this._dest;
+	if (!output) {
+		return files;
 	}
 
-	this._dest = dir;
-	return this;
-};
+	return Promise.all(files.map(x => {
+		if (x.type === 'directory') {
+			return pify(mkdirp)(path.join(output, x.path)).then(() => x);
+		}
 
-/**
- * Add a plugin to the middleware stack
- *
- * @param {Function} plugin
- * @api public
- */
+		const dest = path.join(output, x.path);
+		const mode = x.mode & ~process.umask();
 
-Decompress.prototype.use = function (plugin) {
-	this.streams.push(plugin);
-	return this;
-};
+		return pify(mkdirp)(path.dirname(dest))
+			.then(() => {
+				if (x.type === 'link') {
+					return fsP.link(x.linkname, dest);
+				}
 
-/**
- * Decompress archive
- *
- * @param {Function} cb
- * @api public
- */
+				if (x.type === 'symlink') {
+					return fsP.symlink(x.linkname, dest);
+				}
 
-Decompress.prototype.run = function (cb) {
-	cb = cb || function () {};
+				return fsP.writeFile(dest, x.data, {mode});
+			})
+			.then(() => x);
+	}));
+});
 
-	var stream = this.createStream();
-
-	stream.on('error', cb);
-	stream.pipe(concatStream(cb.bind(null, null)));
-};
-
-/**
- * Create stream
- *
- * @api private
- */
-
-Decompress.prototype.createStream = function () {
-	this.streams.unshift(vinylAssign({extract: true}));
-	this.streams.unshift(this.getFiles());
-
-	if (this.streams.length === 2) {
-		this.use(Decompress.tar(this.opts));
-		this.use(Decompress.tarbz2(this.opts));
-		this.use(Decompress.targz(this.opts));
-		this.use(Decompress.zip(this.opts));
+module.exports = (input, output, opts) => {
+	if (typeof input !== 'string' && !Buffer.isBuffer(input)) {
+		return Promise.reject(new TypeError('Input file required'));
 	}
 
-	if (this.dest()) {
-		this.streams.push(vinylFs.dest(this.dest()));
+	if (typeof output === 'object') {
+		opts = output;
+		output = null;
 	}
 
-	return streamCombiner.obj(this.streams);
+	opts = Object.assign({plugins: [
+		decompressTar(),
+		decompressTarbz2(),
+		decompressTargz(),
+		decompressUnzip()
+	]}, opts);
+
+	const read = typeof input === 'string' ? fsP.readFile(input) : Promise.resolve(input);
+
+	return read.then(buf => extractFile(buf, output, opts));
 };
-
-/**
- * Get files
- *
- * @api private
- */
-
-Decompress.prototype.getFiles = function () {
-	if (Buffer.isBuffer(this.src())) {
-		return bufferToVinyl.stream(this.src());
-	}
-
-	return vinylFs.src(this.src());
-};
-
-/**
- * Module exports
- */
-
-module.exports = Decompress;
-module.exports.tar = require('decompress-tar');
-module.exports.tarbz2 = require('decompress-tarbz2');
-module.exports.targz = require('decompress-targz');
-module.exports.zip = require('decompress-unzip');

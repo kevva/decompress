@@ -14,121 +14,57 @@ $ npm install --save decompress
 ## Usage
 
 ```js
-const Decompress = require('decompress');
+const decompress = require('decompress');
 
-new Decompress({mode: '755'})
-	.src('foo.zip')
-	.dest('dest')
-	.use(Decompress.zip({strip: 1}))
-	.run();
+decompress('unicorn.zip', 'dist').then(files => {
+	console.log('done!');
+});
 ```
 
 
 ## API
 
-### new Decompress(options)
+### decompress(input, [output], [options])
 
-Creates a new `Decompress` instance.
+Returns a Promise for an array of files in the following format:
 
-#### options.mode
+```js
+{
+	data: Buffer,
+	mode: Number,
+	mtime: String,
+	path: String,
+	type: String
+}
+```
+
+#### input
+
+Type: `string` `Buffer`
+
+File to decompress.
+
+#### output
 
 Type: `string`
 
-Set mode on the extracted files, i.e `{ mode: '755' }`.
+Output directory.
 
-#### options.strip
+#### options
 
-Type: `number`
+##### plugins
 
-Equivalent to `--strip-components` for tar.
+Type: `Array`<br>
+Default: `[decompressTar(), decompressTarbz2(), decompressTargz(), decompressUnzip()]`
 
-### .src(files)
+Array of [plugins](https://www.npmjs.com/browse/keyword/decompressplugin) to use.
 
-#### files
+##### strip
 
-Type: `array`, `buffer` or `string`
+Type: `number`<br>
+Default: `0`
 
-Set the files to be extracted.
-
-### .dest(path)
-
-#### path
-
-Type: `string`
-
-Set the destination to where your file will be extracted to.
-
-### .use(plugin)
-
-#### plugin
-
-Type: `function`
-
-Add a `plugin` to the middleware stack.
-
-### .run(callback)
-
-Extract your file with the given settings.
-
-#### callback(err, files)
-
-Type: `function`
-
-The callback will return an array of vinyl files in `files`.
-
-
-## Plugins
-
-The following [plugins](https://www.npmjs.org/browse/keyword/decompressplugin) are bundled with decompress:
-
-* [tar](#tar) — Extract TAR files.
-* [tar.bz2](#tarbz2) — Extract TAR.BZ files.
-* [tar.gz](#targz) — Extract TAR.GZ files.
-* [zip](#zip) — Extract ZIP files.
-
-### .tar(options)
-
-Extract TAR files.
-
-```js
-const Decompress = require('decompress');
-
-new Decompress()
-	.use(Decompress.tar({strip: 1}));
-```
-
-### .tarbz2(options)
-
-Extract TAR.BZ files.
-
-```js
-const Decompress = require('decompress');
-
-new Decompress()
-	.use(Decompress.tarbz2({strip: 1}));
-```
-
-### .targz(options)
-
-Extract TAR.GZ files.
-
-```js
-const Decompress = require('decompress');
-
-new Decompress()
-	.use(Decompress.targz({strip: 1}));
-```
-
-### .zip(options)
-
-Extract ZIP files.
-
-```js
-const Decompress = require('decompress');
-
-new Decompress()
-	.use(Decompress.zip({strip: 1}));
-```
+Remove leading directory components from extracted files.
 
 
 ## License
