@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const decompressTar = require('decompress-tar');
+const decompressTarbz2 = require('decompress-tarbz2');
+const decompressTargz = require('decompress-targz');
 const decompressUnzip = require('decompress-unzip');
 const mkdirp = require('mkdirp');
 const pify = require('pify');
@@ -41,11 +43,11 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 		return pify(mkdirp)(path.dirname(dest))
 			.then(() => {
 				if (x.type === 'link') {
-					return fsP.link(path.resolve(output, x.linkname), x.path);
+					return fsP.link(x.linkname, dest);
 				}
 
 				if (x.type === 'symlink') {
-					return fsP.symlink(x.linkname, x.path);
+					return fsP.symlink(x.linkname, dest);
 				}
 
 				return fsP.writeFile(dest, x.data, {mode});
@@ -66,6 +68,8 @@ module.exports = (input, output, opts) => {
 
 	opts = Object.assign({plugins: [
 		decompressTar(),
+		decompressTarbz2(),
+		decompressTargz(),
 		decompressUnzip()
 	]}, opts);
 

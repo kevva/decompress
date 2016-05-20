@@ -30,11 +30,12 @@
     "unzip"
   ],
   "dependencies": {
-    "decompress-tar": "kevva/decompress-tar#rewrite",
-    "decompress-unzip": "kevva/decompress-unzip#rewrite",
+    "decompress-tar": "^4.0.0",
+    "decompress-tarbz2": "^4.0.0",
+    "decompress-targz": "^4.0.0",
+    "decompress-unzip": "^4.0.1",
     "mkdirp": "^0.5.1",
     "pify": "^2.3.0",
-    "promise.pipe": "^3.0.0",
     "strip-dirs": "^1.1.1"
   },
   "devDependencies": {

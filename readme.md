@@ -55,7 +55,7 @@ Output directory.
 ##### plugins
 
 Type: `Array`<br>
-Default: `[decompressTar(), decompressTarGz(), decompressUnzip()]`
+Default: `[decompressTar(), decompressTarbz2(), decompressTargz(), decompressUnzip()]`
 
 Array of [plugins](https://www.npmjs.com/browse/keyword/decompressplugin) to use.
 
