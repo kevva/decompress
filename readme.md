@@ -52,6 +52,37 @@ Output directory.
 
 #### options
 
+##### filter
+
+Type: `Function`
+
+Filter out files before extracting. E.g:
+
+```js
+decompress('unicorn.zip', 'dist', {
+	filter: file => path.extname(file.path) !== '.exe'
+}).then(files => {
+	console.log('done!');
+});
+```
+
+##### map
+
+Type: `Function`
+
+Map files before extracting: E.g:
+
+```js
+decompress('unicorn.zip', 'dist', {
+	map: file => {
+		file.path = `unicorn-${file.path}`;
+		return file;
+	}
+}).then(files => {
+	console.log('done!');
+});
+```
+
 ##### plugins
 
 Type: `Array`<br>

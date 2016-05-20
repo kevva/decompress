@@ -73,6 +73,25 @@ test('strip option', async t => {
 	t.true(isJpg(tarFiles[0].data));
 });
 
+test('filter option', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {
+		filter: x => x.path !== 'test.jpg'
+	});
+
+	t.is(files.length, 0);
+});
+
+test('map option', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {
+		map: x => {
+			x.path = `unicorn-${x.path}`;
+			return x;
+		}
+	});
+
+	t.is(files[0].path, 'unicorn-test.jpg');
+});
+
 test('return emptpy array if no plugins are set', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {plugins: []});
 	t.is(files.length, 0);

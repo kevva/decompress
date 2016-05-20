@@ -28,6 +28,14 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 			.filter(x => x.path !== '.');
 	}
 
+	if (typeof opts.filter === 'function') {
+		files = files.filter(opts.filter);
+	}
+
+	if (typeof opts.map === 'function') {
+		files = files.map(opts.map);
+	}
+
 	if (!output) {
 		return files;
 	}
