@@ -50,6 +50,19 @@ test('extract file to directory', async t => {
 	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
+test('extract symlink', async t => {
+	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1});
+	t.is(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
+	await fsP.unlink(path.join(__dirname, 'symlink'));
+	await fsP.unlink(path.join(__dirname, 'file.txt'));
+});
+
+test('extract directory', async t => {
+	await m(path.join(__dirname, 'fixtures', 'directory.tar'), __dirname);
+	t.true(await pathExists(path.join(__dirname, 'directory')));
+	await fsP.rmdir(path.join(__dirname, 'directory'));
+});
+
 test('strip option', async t => {
 	const zipFiles = await m(path.join(__dirname, 'fixtures', 'strip.zip'), {strip: 1});
 	const tarFiles = await m(path.join(__dirname, 'fixtures', 'strip.tar'), {strip: 1});
