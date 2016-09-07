@@ -8,6 +8,7 @@ const decompressUnzip = require('decompress-unzip');
 const mkdirp = require('mkdirp');
 const pify = require('pify');
 const stripDirs = require('strip-dirs');
+
 const fsP = pify(fs);
 
 const runPlugins = (input, opts) => {
