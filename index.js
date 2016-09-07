@@ -57,6 +57,10 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 					return fsP.link(x.linkname, dest);
 				}
 
+				if (x.type === 'symlink' && process.platform === 'win32') {
+					return fsP.link(x.linkname, dest);
+				}
+
 				if (x.type === 'symlink') {
 					return fsP.symlink(x.linkname, dest);
 				}
