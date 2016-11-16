@@ -1,6 +1,6 @@
 'use strict';
-const fs = require('graceful-fs');
 const path = require('path');
+const fs = require('graceful-fs');
 const decompressTar = require('decompress-tar');
 const decompressTarbz2 = require('decompress-tarbz2');
 const decompressTargz = require('decompress-targz');
