@@ -8,7 +8,6 @@ const decompressUnzip = require('decompress-unzip');
 const mkdirp = require('mkdirp');
 const pify = require('pify');
 const stripDirs = require('strip-dirs');
-
 const fsP = pify(fs);
 
 const runPlugins = (input, opts) => {
@@ -42,23 +41,16 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 	}
 
 	return Promise.all(files.map(x => {
+		if (x.type === 'directory') {
+			return pify(mkdirp)(path.join(output, x.path)).then(() => x);
+		}
+
 		const dest = path.join(output, x.path);
 		const mode = x.mode & ~process.umask();
-		const now = new Date();
-
-		if (x.type === 'directory') {
-			return pify(mkdirp)(dest)
-				.then(() => fsP.utimes(dest, now, x.mtime))
-				.then(() => x);
-		}
 
 		return pify(mkdirp)(path.dirname(dest))
 			.then(() => {
 				if (x.type === 'link') {
-					return fsP.link(x.linkname, dest);
-				}
-
-				if (x.type === 'symlink' && process.platform === 'win32') {
 					return fsP.link(x.linkname, dest);
 				}
 
@@ -68,7 +60,6 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 				return fsP.writeFile(dest, x.data, {mode});
 			})
-			.then(() => x.type === 'file' && fsP.utimes(dest, now, x.mtime))
 			.then(() => x);
 	}));
 });
@@ -88,7 +79,7 @@ module.exports = (input, output, opts) => {
 		decompressTarbz2(),
 		decompressTargz(),
 		decompressUnzip()
-	]}, opts);
+	], legacyTar: false}, opts);
 
 	const read = typeof input === 'string' ? fsP.readFile(input) : Promise.resolve(input);
 

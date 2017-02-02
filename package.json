@@ -1,23 +1,89 @@
 {
-  "name": "decompress",
-  "version": "4.0.0",
-  "description": "Extracting archives made easy",
-  "license": "MIT",
-  "repository": "kevva/decompress",
+  "_args": [
+    [
+      {
+        "raw": "decompress",
+        "scope": null,
+        "escapedName": "decompress",
+        "name": "decompress",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "C:\\Users\\dario.olivini\\Sviluppo\\openware-lp"
+    ]
+  ],
+  "_from": "decompress@latest",
+  "_id": "decompress@4.0.0",
+  "_inCache": true,
+  "_location": "/decompress",
+  "_nodeVersion": "5.11.0",
+  "_npmOperationalInternal": {
+    "host": "packages-16-east.internal.npmjs.com",
+    "tmp": "tmp/decompress-4.0.0.tgz_1463757439732_0.21706934203393757"
+  },
+  "_npmUser": {
+    "name": "kevva",
+    "email": "kevinmartensson@gmail.com"
+  },
+  "_npmVersion": "3.8.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "decompress",
+    "scope": null,
+    "escapedName": "decompress",
+    "name": "decompress",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/decompress/-/decompress-4.0.0.tgz",
+  "_shasum": "fa23aa579a2629f7a4d3cd377f7b197aa0c5cf20",
+  "_shrinkwrap": null,
+  "_spec": "decompress",
+  "_where": "C:\\Users\\dario.olivini\\Sviluppo\\openware-lp",
   "author": {
     "name": "Kevin Mårtensson",
     "email": "kevinmartensson@gmail.com",
     "url": "https://github.com/kevva"
   },
+  "bugs": {
+    "url": "https://github.com/kevva/decompress/issues"
+  },
+  "dependencies": {
+    "decompress-tar": "^4.0.0",
+    "decompress-tarbz2": "^4.0.0",
+    "decompress-targz": "^4.0.0",
+    "decompress-unzip": "^4.0.1",
+    "mkdirp": "^0.5.1",
+    "pify": "^2.3.0",
+    "strip-dirs": "^1.1.1"
+  },
+  "description": "Extracting archives made easy",
+  "devDependencies": {
+    "ava": "*",
+    "is-jpg": "^1.0.0",
+    "path-exists": "^3.0.0",
+    "pify": "^2.3.0",
+    "xo": "*"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "fa23aa579a2629f7a4d3cd377f7b197aa0c5cf20",
+    "tarball": "https://registry.npmjs.org/decompress/-/decompress-4.0.0.tgz"
+  },
   "engines": {
     "node": ">=4"
-  },
-  "scripts": {
-    "test": "xo && ava"
   },
   "files": [
     "index.js"
   ],
+  "gitHead": "ac4411ecd846d26cf6be4447bfe1ca9b01fb4ba9",
+  "homepage": "https://github.com/kevva/decompress#readme",
   "keywords": [
     "bz2",
     "bzip2",
@@ -29,22 +95,28 @@
     "zip",
     "unzip"
   ],
-  "dependencies": {
-    "decompress-tar": "^4.0.0",
-    "decompress-tarbz2": "^4.0.0",
-    "decompress-targz": "^4.0.0",
-    "decompress-unzip": "^4.0.1",
-    "mkdirp": "^0.5.1",
-    "pify": "^2.3.0",
-    "strip-dirs": "^2.0.0"
+  "license": "MIT",
+  "maintainers": [
+    {
+      "name": "kevva",
+      "email": "kevinmartensson@gmail.com"
+    },
+    {
+      "name": "shinnn",
+      "email": "snnskwtnb@gmail.com"
+    }
+  ],
+  "name": "decompress",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevva/decompress.git"
   },
-  "devDependencies": {
-    "ava": "*",
-    "is-jpg": "^1.0.0",
-    "path-exists": "^3.0.0",
-    "pify": "^2.3.0",
-    "xo": "*"
+  "scripts": {
+    "test": "xo && ava"
   },
+  "version": "4.0.0",
   "xo": {
     "esnext": true
   }
