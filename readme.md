@@ -97,6 +97,13 @@ Default: `0`
 
 Remove leading directory components from extracted files.
 
+##### legacyTar
+
+Type: `boolean`<br>
+Default: `false`
+
+Prevent file check for [pre-POSIX.1-1988 (i.e. v7)](https://en.wikipedia.org/wiki/Tar_(computing)#File_format) tar files where there is no magic number for recognition. Should use if is generated from old Linux releases.
+
 
 ## License
 

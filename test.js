@@ -50,13 +50,6 @@ test.serial('extract file to directory', async t => {
 	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
-test('extract symlink', async t => {
-	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1});
-	t.is(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
-	await fsP.unlink(path.join(__dirname, 'symlink'));
-	await fsP.unlink(path.join(__dirname, 'file.txt'));
-});
-
 test('extract directory', async t => {
 	await m(path.join(__dirname, 'fixtures', 'directory.tar'), __dirname);
 	t.true(await pathExists(path.join(__dirname, 'directory')));
@@ -92,14 +85,28 @@ test('map option', async t => {
 	t.is(files[0].path, 'unicorn-test.jpg');
 });
 
-test.serial('set mtime', async t => {
-	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), __dirname);
-	const stat = await fsP.stat(path.join(__dirname, 'test.jpg'));
-	t.deepEqual(files[0].mtime, stat.mtime);
-	await fsP.unlink(path.join(__dirname, 'test.jpg'));
-});
+if (process.platform === 'win32') {
+	console.warn(['> WARNING: "extract symlink" and "set mtime" tests are DISABLED on win32 platform',
+		'> becouse the first needs administrator privileges, while the creation time is resetted to the copy time',
+		'> when you are on Windows unless you copy with specialized tools.'].join('\n'));
+} else {
+	test('extract symlink', async t => {
+		await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1});
+		t.is(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
+		await fsP.unlink(path.join(__dirname, 'symlink'));
+		await fsP.unlink(path.join(__dirname, 'file.txt'));
+	});
 
-test('return emptpy array if no plugins are set', async t => {
+	test.serial('set mtime', async t => {
+		const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), __dirname);
+		const stat = await fsP.stat(path.join(__dirname, 'test.jpg'));
+
+		t.deepEqual(files[0].mtime, stat.mtime);
+		await fsP.unlink(path.join(__dirname, 'test.jpg'));
+	});
+}
+
+test('return empty array if no plugins are set', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {plugins: []});
 	t.is(files.length, 0);
 });
