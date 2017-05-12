@@ -5,7 +5,7 @@ const decompressTar = require('decompress-tar');
 const decompressTarbz2 = require('decompress-tarbz2');
 const decompressTargz = require('decompress-targz');
 const decompressUnzip = require('decompress-unzip');
-const mkdirp = require('mkdirp');
+const makeDir = require('make-dir');
 const pify = require('pify');
 const stripDirs = require('strip-dirs');
 
@@ -47,12 +47,12 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 		const now = new Date();
 
 		if (x.type === 'directory') {
-			return pify(mkdirp)(dest)
+			return makeDir(dest)
 				.then(() => fsP.utimes(dest, now, x.mtime))
 				.then(() => x);
 		}
 
-		return pify(mkdirp)(path.dirname(dest))
+		return makeDir(path.dirname(dest))
 			.then(() => {
 				if (x.type === 'link') {
 					return fsP.link(x.linkname, dest);

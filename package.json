@@ -7,7 +7,7 @@
   "author": {
     "name": "Kevin Mårtensson",
     "email": "kevinmartensson@gmail.com",
-    "url": "https://github.com/kevva"
+    "url": "github.com/kevva"
   },
   "engines": {
     "node": ">=4"
@@ -35,7 +35,7 @@
     "decompress-targz": "^4.0.0",
     "decompress-unzip": "^4.0.1",
     "graceful-fs": "^4.1.10",
-    "mkdirp": "^0.5.1",
+    "make-dir": "^1.0.0",
     "pify": "^2.3.0",
     "strip-dirs": "^2.0.0"
   },
@@ -45,8 +45,5 @@
     "path-exists": "^3.0.0",
     "pify": "^2.3.0",
     "xo": "*"
-  },
-  "xo": {
-    "esnext": true
   }
 }
