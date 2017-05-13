@@ -45,6 +45,7 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 		const dest = path.join(output, x.path);
 		const mode = x.mode & ~process.umask();
 		const now = new Date();
+		x.path = dest;
 
 		if (x.type === 'directory') {
 			return makeDir(dest)
