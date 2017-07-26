@@ -66,7 +66,7 @@ decompress('unicorn.zip', 'dist', {
 });
 ```
 
-Note that in the current implementation, **`filter` is only applied after fully reading all files from the archive in memory**. Do not rely on this option to limit the amount of memory used by `decompress` to the size of the files included by `filter`.
+Note that in the current implementation, **`filter` is only applied after fully reading all files from the archive in memory**. Do not rely on this option to limit the amount of memory used by `decompress` to the size of the files included by `filter`. (`decompress` also always reads the entire compressed file into memory.)
 
 ##### map
 
