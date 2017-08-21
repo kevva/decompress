@@ -7,7 +7,7 @@
 ## Install
 
 ```
-$ npm install --save decompress
+$ npm install decompress
 ```
 
 
