@@ -35,15 +35,15 @@
 		"decompress-targz": "^4.0.0",
 		"decompress-unzip": "^4.0.1",
 		"graceful-fs": "^4.1.10",
-		"make-dir": "^1.0.0",
-		"pify": "^2.3.0",
-		"strip-dirs": "^2.0.0"
+		"make-dir": "^3.0.0",
+		"pify": "^4.0.1",
+		"strip-dirs": "^3.0.0"
 	},
 	"devDependencies": {
 		"ava": "*",
 		"esm": "^3.2.25",
-		"is-jpg": "^1.0.0",
-		"path-exists": "^3.0.0",
+		"is-jpg": "^2.0.0",
+		"path-exists": "^4.0.0",
 		"pify": "^2.3.0",
 		"xo": "*"
 	},
@@ -54,7 +54,15 @@
 	},
 	"xo": {
 		"rules": {
-			"promise/prefer-await-to-then": "off"
-		}
+			"promise/prefer-await-to-then": "warn"
+		},
+		"overrides": [
+			{
+				"files": "test.js",
+				"rules": {
+					"import/default": "ignore"
+				}
+			}
+		]
 	}
 }

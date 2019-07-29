@@ -87,12 +87,12 @@ module.exports = (input, output, opts) => {
 		output = null;
 	}
 
-	opts = Object.assign({plugins: [
+	opts = {plugins: [
 		decompressTar(),
 		decompressTarbz2(),
 		decompressTargz(),
 		decompressUnzip()
-	]}, opts);
+	], ...opts};
 
 	const read = typeof input === 'string' ? fsP.readFile(input) : Promise.resolve(input);
 
