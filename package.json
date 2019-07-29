@@ -10,7 +10,7 @@
 		"url": "github.com/kevva"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": ">=8"
 	},
 	"scripts": {
 		"test": "xo && ava"
@@ -18,6 +18,19 @@
 	"files": [
 		"index.js"
 	],
+	"xo": {
+		"rules": {
+			"promise/prefer-await-to-then": "warn"
+		},
+		"overrides": [
+			{
+				"files": "test.js",
+				"rules": {
+					"import/default": "ignore"
+				}
+			}
+		]
+	},
 	"keywords": [
 		"bz2",
 		"bzip2",
@@ -35,15 +48,14 @@
 		"decompress-targz": "^4.0.0",
 		"decompress-unzip": "^4.0.1",
 		"graceful-fs": "^4.1.10",
-		"make-dir": "^1.0.0",
-		"pify": "^2.3.0",
-		"strip-dirs": "^2.0.0"
+		"make-dir": "^3.0.0",
+		"pify": "^4.0.1",
+		"strip-dirs": "^3.0.0"
 	},
 	"devDependencies": {
-		"ava": "*",
-		"is-jpg": "^1.0.0",
-		"path-exists": "^3.0.0",
-		"pify": "^2.3.0",
-		"xo": "*"
+		"ava": "^2.2.0",
+		"is-jpg": "^2.0.0",
+		"path-exists": "^4.0.0",
+		"xo": "^0.24.0"
 	}
 }
