@@ -3,10 +3,19 @@ import path from 'path';
 import isJpg from 'is-jpg';
 import pathExists from 'path-exists';
 import pify from 'pify';
+import rimraf from 'rimraf';
 import test from 'ava';
 import m from '.';
 
 const fsP = pify(fs);
+const rimrafP = pify(rimraf);
+
+test.after('ensure decompressed files and directories are cleaned up', async () => {
+	await rimrafP(path.join(__dirname, 'directory'));
+	await rimrafP(path.join(__dirname, 'dist'));
+	await rimrafP(path.join(__dirname, 'edge_case_dots'));
+	await rimrafP(path.join(__dirname, 'test.jpg'));
+});
 
 test('extract file', async t => {
 	const tarFiles = await m(path.join(__dirname, 'fixtures', 'file.tar'));
@@ -46,8 +55,6 @@ test.serial('extract file to directory', async t => {
 	t.is(files[0].path, 'test.jpg');
 	t.true(isJpg(files[0].data));
 	t.true(await pathExists(path.join(__dirname, 'test.jpg')));
-
-	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
 test('extract symlink', async t => {
@@ -60,7 +67,6 @@ test('extract symlink', async t => {
 test('extract directory', async t => {
 	await m(path.join(__dirname, 'fixtures', 'directory.tar'), __dirname);
 	t.true(await pathExists(path.join(__dirname, 'directory')));
-	await fsP.rmdir(path.join(__dirname, 'directory'));
 });
 
 test('strip option', async t => {
@@ -96,7 +102,6 @@ test.serial('set mtime', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), __dirname);
 	const stat = await fsP.stat(path.join(__dirname, 'test.jpg'));
 	t.deepEqual(files[0].mtime, stat.mtime);
-	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
 test('return emptpy array if no plugins are set', async t => {
@@ -133,5 +138,4 @@ test('allows filenames and directories to be written with dots in their names', 
 		'edge_case_dots/x',
 		'edge_case_dots/sample../test.txt'
 	].sort());
-	await fsP.rmdir(path.join(__dirname, 'edge_case_dots'), {recursive: true});
 });
