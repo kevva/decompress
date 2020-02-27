@@ -43,7 +43,7 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 	return Promise.all(files.map(x => {
 		const dest = path.join(output, x.path);
-		if (dest.match(/\.\./)) {
+		if (dest.match(/\.\.\//)) {
 			throw (new Error('File path contains "..":', dest));
 		}
 

@@ -109,3 +109,9 @@ test('throw when a location outside the root is given', async t => {
 		await m(path.join(__dirname, 'fixtures', 'slipping.tar.gz'), 'dist');
 	}, {message: /File path contains "\.\."/});
 });
+
+test('allows filenames to be written with dots in them', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'edge_case_dots.tar.gz'), __dirname);
+	t.is(files.length, 3);
+	await fsP.rmdir(path.join(__dirname, 'edge_case_dots'), {recursive: true});
+});
