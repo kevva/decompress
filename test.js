@@ -107,13 +107,19 @@ test('return emptpy array if no plugins are set', async t => {
 test('throw when a location outside the root is given', async t => {
 	await t.throwsAsync(async () => {
 		await m(path.join(__dirname, 'fixtures', 'slipping.tar.gz'), 'dist');
-	}, {message: /Refusing to write/});
+	}, {message: /Refusing/});
 });
 
 test('throw when a location outside the root including symlinks is given', async t => {
 	await t.throwsAsync(async () => {
 		await m(path.join(__dirname, 'fixtures', 'slip.zip'), 'dist');
-	}, {message: /Refusing to write/});
+	}, {message: /Refusing/});
+});
+
+test('throw when a directory outside the root including symlinks is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slipping_directory.tar.gz'), 'dist');
+	}, {message: /Refusing/});
 });
 
 test('allows filenames and directories to be written with dots in their names', async t => {

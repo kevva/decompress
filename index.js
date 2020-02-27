@@ -19,6 +19,21 @@ const runPlugins = (input, opts) => {
 	return Promise.all(opts.plugins.map(x => x(input, opts))).then(files => files.reduce((a, b) => a.concat(b)));
 };
 
+const safeMakeDir = (dir, realOutputPath) => {
+	return fsP.realpath(dir)
+		.catch(_ => {
+			const parent = path.dirname(dir);
+			return safeMakeDir(parent, realOutputPath);
+		})
+		.then(realParentPath => {
+			if (realParentPath.indexOf(realOutputPath) !== 0) {
+				throw (new Error('Refusing to create a directory outside the output path.'));
+			}
+
+			return makeDir(dir);
+		});
+};
+
 const extractFile = (input, output, opts) => runPlugins(input, opts).then(files => {
 	if (opts.strip > 0) {
 		files = files
@@ -47,13 +62,16 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 		const now = new Date();
 
 		if (x.type === 'directory') {
-			return makeDir(dest)
+			return makeDir(output)
+				.then(outputPath => fsP.realpath(outputPath))
+				.then(realOutputPath => safeMakeDir(dest, realOutputPath))
 				.then(() => fsP.utimes(dest, now, x.mtime))
 				.then(() => x);
 		}
 
 		return makeDir(output)
-			.then(() => makeDir(path.dirname(dest)))
+			.then(outputPath => fsP.realpath(outputPath))
+			.then(realOutputPath => safeMakeDir(path.dirname(dest), realOutputPath))
 			.then(() => {
 				return Promise.all([fsP.realpath(path.dirname(dest)), fsP.realpath(output)])
 					.then(([realDestinationDir, realOutputDir]) => {
