@@ -43,10 +43,6 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 	return Promise.all(files.map(x => {
 		const dest = path.join(output, x.path);
-		if (dest.match(/\.\.\//)) {
-			throw (new Error('File path contains "..":', dest));
-		}
-
 		const mode = x.mode & ~process.umask();
 		const now = new Date();
 
@@ -56,7 +52,16 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 				.then(() => x);
 		}
 
-		return makeDir(path.dirname(dest))
+		return makeDir(output)
+			.then(() => makeDir(path.dirname(dest)))
+			.then(() => {
+				return Promise.all([fsP.realpath(path.dirname(dest)), fsP.realpath(output)])
+					.then(([realDestinationDir, realOutputDir]) => {
+						if (realDestinationDir.indexOf(realOutputDir) !== 0) {
+							throw (new Error('Refusing to write outside output directory: ' + realDestinationDir));
+						}
+					});
+			})
 			.then(() => {
 				if (x.type === 'link') {
 					return fsP.link(x.linkname, dest);

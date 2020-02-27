@@ -107,11 +107,25 @@ test('return emptpy array if no plugins are set', async t => {
 test('throw when a location outside the root is given', async t => {
 	await t.throwsAsync(async () => {
 		await m(path.join(__dirname, 'fixtures', 'slipping.tar.gz'), 'dist');
-	}, {message: /File path contains "\.\."/});
+	}, {message: /Refusing to write/});
 });
 
-test('allows filenames to be written with dots in them', async t => {
+test('throw when a location outside the root including symlinks is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip.zip'), 'dist');
+	}, {message: /Refusing to write/});
+});
+
+test('allows filenames and directories to be written with dots in their names', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'edge_case_dots.tar.gz'), __dirname);
-	t.is(files.length, 3);
+	t.is(files.length, 6);
+	t.deepEqual(files.map(f => f.path).sort(), [
+		'edge_case_dots/',
+		'edge_case_dots/internal_dots..txt',
+		'edge_case_dots/sample../',
+		'edge_case_dots/ending_dots..',
+		'edge_case_dots/x',
+		'edge_case_dots/sample../test.txt'
+	].sort());
 	await fsP.rmdir(path.join(__dirname, 'edge_case_dots'), {recursive: true});
 });
