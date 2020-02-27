@@ -52,8 +52,7 @@ test.serial('extract file to directory', async t => {
 
 test.serial('extract without symlink', async t => {
 	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1, symlinks: false});
-	t.not(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
-	await fsP.unlink(path.join(__dirname, 'symlink'));
+	t.false(fs.existsSync(path.join(__dirname, 'symlink')));
 	await fsP.unlink(path.join(__dirname, 'file.txt'));
 });
 

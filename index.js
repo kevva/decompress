@@ -54,15 +54,19 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 		return makeDir(path.dirname(dest))
 			.then(() => {
-				if (x.type === 'link' && opts.symlinks !== false) {
+				if ((x.type === 'link' || x.type === 'symlink') && opts.symlinks === false) {
+					return;
+				}
+
+				if (x.type === 'link') {
 					return fsP.link(x.linkname, dest);
 				}
 
-				if (x.type === 'symlink' && process.platform === 'win32' && opts.symlinks !== false) {
+				if (x.type === 'symlink' && process.platform === 'win32') {
 					return fsP.link(x.linkname, dest);
 				}
 
-				if (x.type === 'symlink' && opts.symlinks !== false) {
+				if (x.type === 'symlink') {
 					return fsP.symlink(x.linkname, dest);
 				}
 
