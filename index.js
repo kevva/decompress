@@ -54,6 +54,10 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 		return makeDir(path.dirname(dest))
 			.then(() => {
+				if ((x.type === 'link' || x.type === 'symlink') && opts.symlinks === false) {
+					return;
+				}
+
 				if (x.type === 'link') {
 					return fsP.link(x.linkname, dest);
 				}
@@ -83,12 +87,12 @@ module.exports = (input, output, opts) => {
 		output = null;
 	}
 
-	opts = Object.assign({plugins: [
+	opts = {plugins: [
 		decompressTar(),
 		decompressTarbz2(),
 		decompressTargz(),
 		decompressUnzip()
-	]}, opts);
+	], ...opts};
 
 	const read = typeof input === 'string' ? fsP.readFile(input) : Promise.resolve(input);
 

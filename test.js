@@ -50,7 +50,13 @@ test.serial('extract file to directory', async t => {
 	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
-test('extract symlink', async t => {
+test.serial('extract without symlink', async t => {
+	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1, symlinks: false});
+	t.false(fs.existsSync(path.join(__dirname, 'symlink')));
+	await fsP.unlink(path.join(__dirname, 'file.txt'));
+});
+
+test.serial('extract symlink', async t => {
 	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1});
 	t.is(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
 	await fsP.unlink(path.join(__dirname, 'symlink'));
@@ -99,7 +105,7 @@ test.serial('set mtime', async t => {
 	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
-test('return emptpy array if no plugins are set', async t => {
+test('return empty array if no plugins are set', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {plugins: []});
 	t.is(files.length, 0);
 });
