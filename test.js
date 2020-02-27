@@ -103,3 +103,9 @@ test('return emptpy array if no plugins are set', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {plugins: []});
 	t.is(files.length, 0);
 });
+
+test('throw when a location outside the root is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slipping.tar.gz'), 'dist');
+	}, {message: /File path contains "\.\."/});
+});
