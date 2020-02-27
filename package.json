@@ -10,7 +10,7 @@
 		"url": "github.com/kevva"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": ">=7.6.0"
 	},
 	"scripts": {
 		"test": "xo && ava"
@@ -41,9 +41,20 @@
 	},
 	"devDependencies": {
 		"ava": "*",
+		"esm": "^3.2.25",
 		"is-jpg": "^1.0.0",
 		"path-exists": "^3.0.0",
 		"pify": "^2.3.0",
 		"xo": "*"
+	},
+	"ava": {
+		"require": [
+			"esm"
+		]
+	},
+	"xo": {
+		"rules": {
+			"promise/prefer-await-to-then": "off"
+		}
 	}
 }
