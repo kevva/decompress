@@ -10,10 +10,13 @@ import m from '.';
 const fsP = pify(fs);
 const rimrafP = pify(rimraf);
 
-test.after('ensure decompressed files and directories are cleaned up', async () => {
+test.serial.afterEach('ensure decompressed files and directories are cleaned up', async () => {
 	await rimrafP(path.join(__dirname, 'directory'));
 	await rimrafP(path.join(__dirname, 'dist'));
+	await rimrafP(path.join(__dirname, 'example.txt'));
+	await rimrafP(path.join(__dirname, 'file.txt'));
 	await rimrafP(path.join(__dirname, 'edge_case_dots'));
+	await rimrafP(path.join(__dirname, 'symlink'));
 	await rimrafP(path.join(__dirname, 'test.jpg'));
 });
 
@@ -57,14 +60,12 @@ test.serial('extract file to directory', async t => {
 	t.true(await pathExists(path.join(__dirname, 'test.jpg')));
 });
 
-test('extract symlink', async t => {
+test.serial('extract symlink', async t => {
 	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1});
 	t.is(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
-	await fsP.unlink(path.join(__dirname, 'symlink'));
-	await fsP.unlink(path.join(__dirname, 'file.txt'));
 });
 
-test('extract directory', async t => {
+test.serial('extract directory', async t => {
 	await m(path.join(__dirname, 'fixtures', 'directory.tar'), __dirname);
 	t.true(await pathExists(path.join(__dirname, 'directory')));
 });
@@ -115,19 +116,25 @@ test('throw when a location outside the root is given', async t => {
 	}, {message: /Refusing/});
 });
 
-test('throw when a location outside the root including symlinks is given', async t => {
+test.serial('throw when a location outside the root including symlinks is given', async t => {
 	await t.throwsAsync(async () => {
 		await m(path.join(__dirname, 'fixtures', 'slip.zip'), 'dist');
 	}, {message: /Refusing/});
 });
 
-test('throw when a directory outside the root including symlinks is given', async t => {
+test.serial('throw when a top-level symlink outside the root is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip2.zip'), 'dist');
+	}, {message: /Refusing/});
+});
+
+test.serial('throw when a directory outside the root including symlinks is given', async t => {
 	await t.throwsAsync(async () => {
 		await m(path.join(__dirname, 'fixtures', 'slipping_directory.tar.gz'), 'dist');
 	}, {message: /Refusing/});
 });
 
-test('allows filenames and directories to be written with dots in their names', async t => {
+test.serial('allows filenames and directories to be written with dots in their names', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'edge_case_dots.tar.gz'), __dirname);
 	t.is(files.length, 6);
 	t.deepEqual(files.map(f => f.path).sort(), [
@@ -138,4 +145,10 @@ test('allows filenames and directories to be written with dots in their names', 
 		'edge_case_dots/x',
 		'edge_case_dots/sample../test.txt'
 	].sort());
+});
+
+test.serial('allows top-level file', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'top_level_example.tar.gz'), 'dist');
+	t.is(files.length, 1);
+	t.is(files[0].path, 'example.txt');
 });

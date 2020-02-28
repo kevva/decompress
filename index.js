@@ -71,11 +71,29 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 		return makeDir(output)
 			.then(outputPath => fsP.realpath(outputPath))
-			.then(realOutputPath => safeMakeDir(path.dirname(dest), realOutputPath))
-			.then(() => {
-				return Promise.all([fsP.realpath(path.dirname(dest)), fsP.realpath(output)])
-					.then(([realDestinationDir, realOutputDir]) => {
-						if (realDestinationDir.indexOf(realOutputDir) !== 0) {
+			.then(realOutputPath => {
+				return safeMakeDir(path.dirname(dest), realOutputPath)
+					.then(() => realOutputPath);
+			})
+			.then(realOutputPath => {
+				// Check for symlinks pointing outside output directory
+				return fsP.readlink(dest)
+					.catch(_ => {
+						// File doesn't exist yet
+						return null;
+					})
+					.then(symlinkPointsTo => {
+						if (symlinkPointsTo && symlinkPointsTo.indexOf(realOutputPath) !== 0) {
+							throw (new Error('Refusing to write into a file outside output directory, through a symlink: ' + symlinkPointsTo));
+						}
+
+						return realOutputPath;
+					});
+			})
+			.then(realOutputPath => {
+				return fsP.realpath(path.dirname(dest))
+					.then(realDestinationDir => {
+						if (realDestinationDir.indexOf(realOutputPath) !== 0) {
 							throw (new Error('Refusing to write outside output directory: ' + realDestinationDir));
 						}
 					});
