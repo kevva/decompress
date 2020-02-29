@@ -110,7 +110,7 @@ test('return emptpy array if no plugins are set', async t => {
 	t.is(files.length, 0);
 });
 
-test('throw when a location outside the root is given', async t => {
+test.serial('throw when a location outside the root is given', async t => {
 	await t.throwsAsync(async () => {
 		await m(path.join(__dirname, 'fixtures', 'slipping.tar.gz'), 'dist');
 	}, {message: /Refusing/});
@@ -151,4 +151,16 @@ test.serial('allows top-level file', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'top_level_example.tar.gz'), 'dist');
 	t.is(files.length, 1);
 	t.is(files[0].path, 'example.txt');
+});
+
+test.serial('throw when chained symlinks to /tmp/dist allow escape outside root directory', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip3.zip'), '/tmp/dist');
+	}, {message: /Refusing/});
+});
+
+test.serial('throw when chained symlinks to /private/tmp/dist2 allow escape outside root directory', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip3a.zip'), '/private/tmp/dist2');
+	}, {message: /Refusing/});
 });
