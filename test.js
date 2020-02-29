@@ -158,9 +158,3 @@ test.serial('throw when chained symlinks to /tmp/dist allow escape outside root 
 		await m(path.join(__dirname, 'fixtures', 'slip3.zip'), '/tmp/dist');
 	}, {message: /Refusing/});
 });
-
-test.serial('throw when chained symlinks to /private/tmp/dist2 allow escape outside root directory', async t => {
-	await t.throwsAsync(async () => {
-		await m(path.join(__dirname, 'fixtures', 'slip3a.zip'), '/private/tmp/dist2');
-	}, {message: /Refusing/});
-});
