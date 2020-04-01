@@ -3,10 +3,22 @@ import path from 'path';
 import isJpg from 'is-jpg';
 import pathExists from 'path-exists';
 import pify from 'pify';
+import rimraf from 'rimraf';
 import test from 'ava';
 import m from '.';
 
 const fsP = pify(fs);
+const rimrafP = pify(rimraf);
+
+test.serial.afterEach('ensure decompressed files and directories are cleaned up', async () => {
+	await rimrafP(path.join(__dirname, 'directory'));
+	await rimrafP(path.join(__dirname, 'dist'));
+	await rimrafP(path.join(__dirname, 'example.txt'));
+	await rimrafP(path.join(__dirname, 'file.txt'));
+	await rimrafP(path.join(__dirname, 'edge_case_dots'));
+	await rimrafP(path.join(__dirname, 'symlink'));
+	await rimrafP(path.join(__dirname, 'test.jpg'));
+});
 
 test('extract file', async t => {
 	const tarFiles = await m(path.join(__dirname, 'fixtures', 'file.tar'));
@@ -46,21 +58,16 @@ test.serial('extract file to directory', async t => {
 	t.is(files[0].path, 'test.jpg');
 	t.true(isJpg(files[0].data));
 	t.true(await pathExists(path.join(__dirname, 'test.jpg')));
-
-	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
-test('extract symlink', async t => {
+test.serial('extract symlink', async t => {
 	await m(path.join(__dirname, 'fixtures', 'symlink.tar'), __dirname, {strip: 1});
 	t.is(await fsP.realpath(path.join(__dirname, 'symlink')), path.join(__dirname, 'file.txt'));
-	await fsP.unlink(path.join(__dirname, 'symlink'));
-	await fsP.unlink(path.join(__dirname, 'file.txt'));
 });
 
-test('extract directory', async t => {
+test.serial('extract directory', async t => {
 	await m(path.join(__dirname, 'fixtures', 'directory.tar'), __dirname);
 	t.true(await pathExists(path.join(__dirname, 'directory')));
-	await fsP.rmdir(path.join(__dirname, 'directory'));
 });
 
 test('strip option', async t => {
@@ -96,10 +103,58 @@ test.serial('set mtime', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), __dirname);
 	const stat = await fsP.stat(path.join(__dirname, 'test.jpg'));
 	t.deepEqual(files[0].mtime, stat.mtime);
-	await fsP.unlink(path.join(__dirname, 'test.jpg'));
 });
 
 test('return emptpy array if no plugins are set', async t => {
 	const files = await m(path.join(__dirname, 'fixtures', 'file.tar'), {plugins: []});
 	t.is(files.length, 0);
+});
+
+test.serial('throw when a location outside the root is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slipping.tar.gz'), 'dist');
+	}, {message: /Refusing/});
+});
+
+test.serial('throw when a location outside the root including symlinks is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip.zip'), 'dist');
+	}, {message: /Refusing/});
+});
+
+test.serial('throw when a top-level symlink outside the root is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip2.zip'), 'dist');
+	}, {message: /Refusing/});
+});
+
+test.serial('throw when a directory outside the root including symlinks is given', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slipping_directory.tar.gz'), 'dist');
+	}, {message: /Refusing/});
+});
+
+test.serial('allows filenames and directories to be written with dots in their names', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'edge_case_dots.tar.gz'), __dirname);
+	t.is(files.length, 6);
+	t.deepEqual(files.map(f => f.path).sort(), [
+		'edge_case_dots/',
+		'edge_case_dots/internal_dots..txt',
+		'edge_case_dots/sample../',
+		'edge_case_dots/ending_dots..',
+		'edge_case_dots/x',
+		'edge_case_dots/sample../test.txt'
+	].sort());
+});
+
+test.serial('allows top-level file', async t => {
+	const files = await m(path.join(__dirname, 'fixtures', 'top_level_example.tar.gz'), 'dist');
+	t.is(files.length, 1);
+	t.is(files[0].path, 'example.txt');
+});
+
+test.serial('throw when chained symlinks to /tmp/dist allow escape outside root directory', async t => {
+	await t.throwsAsync(async () => {
+		await m(path.join(__dirname, 'fixtures', 'slip3.zip'), '/tmp/dist');
+	}, {message: /Refusing/});
 });
