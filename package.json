@@ -26,10 +26,12 @@
 		"tar",
 		"tar.bz",
 		"tar.gz",
+		"tar.zst",
 		"zip",
 		"unzip"
 	],
 	"dependencies": {
+		"@xingrz/decompress-tarzst": "^1.0.1",
 		"decompress-tar": "^4.0.0",
 		"decompress-tarbz2": "^4.0.0",
 		"decompress-targz": "^4.0.0",
