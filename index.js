@@ -4,6 +4,7 @@ const fs = require('graceful-fs');
 const decompressTar = require('decompress-tar');
 const decompressTarbz2 = require('decompress-tarbz2');
 const decompressTargz = require('decompress-targz');
+const decompressTarzst = require('@xingrz/decompress-tarzst').default;
 const decompressUnzip = require('decompress-unzip');
 const makeDir = require('make-dir');
 const pify = require('pify');
@@ -142,6 +143,7 @@ module.exports = (input, output, opts) => {
 		decompressTar(),
 		decompressTarbz2(),
 		decompressTargz(),
+		decompressTarzst(),
 		decompressUnzip()
 	]}, opts);
 

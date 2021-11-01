@@ -24,6 +24,7 @@ test('extract file', async t => {
 	const tarFiles = await m(path.join(__dirname, 'fixtures', 'file.tar'));
 	const tarbzFiles = await m(path.join(__dirname, 'fixtures', 'file.tar.bz2'));
 	const targzFiles = await m(path.join(__dirname, 'fixtures', 'file.tar.gz'));
+	const tarzstFiles = await m(path.join(__dirname, 'fixtures', 'file.tar.zst'));
 	const zipFiles = await m(path.join(__dirname, 'fixtures', 'file.zip'));
 
 	t.is(tarFiles[0].path, 'test.jpg');
@@ -32,6 +33,8 @@ test('extract file', async t => {
 	t.true(isJpg(tarbzFiles[0].data));
 	t.is(targzFiles[0].path, 'test.jpg');
 	t.true(isJpg(targzFiles[0].data));
+	t.is(tarzstFiles[0].path, 'test.jpg');
+	t.true(isJpg(tarzstFiles[0].data));
 	t.is(zipFiles[0].path, 'test.jpg');
 	t.true(isJpg(zipFiles[0].data));
 });
@@ -43,12 +46,15 @@ test('extract file using buffer', async t => {
 	const tarbzFiles = await m(tarbzBuf);
 	const targzBuf = await fsP.readFile(path.join(__dirname, 'fixtures', 'file.tar.gz'));
 	const targzFiles = await m(targzBuf);
+	const tarzstBuf = await fsP.readFile(path.join(__dirname, 'fixtures', 'file.tar.zst'));
+	const tarzstFiles = await m(tarzstBuf);
 	const zipBuf = await fsP.readFile(path.join(__dirname, 'fixtures', 'file.zip'));
 	const zipFiles = await m(zipBuf);
 
 	t.is(tarFiles[0].path, 'test.jpg');
 	t.is(tarbzFiles[0].path, 'test.jpg');
 	t.is(targzFiles[0].path, 'test.jpg');
+	t.is(tarzstFiles[0].path, 'test.jpg');
 	t.is(zipFiles[0].path, 'test.jpg');
 });
 
