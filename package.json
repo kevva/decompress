@@ -19,9 +19,6 @@
 		"test": "xo && ava",
 		"prepublishOnly": "rm -rf lib && npm run build"
 	},
-	"files": [
-		"index.js"
-	],
 	"keywords": [
 		"bz2",
 		"bzip2",
