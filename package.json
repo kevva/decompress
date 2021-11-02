@@ -13,7 +13,7 @@
 		"node": ">=4"
 	},
 	"scripts": {
-		"test": "xo && ava"
+		"test": "jest"
 	},
 	"files": [
 		"index.js"
@@ -42,22 +42,8 @@
 		"strip-dirs": "^2.0.0"
 	},
 	"devDependencies": {
-		"ava": "*",
-		"esm": "^3.2.25",
-		"is-jpg": "^1.0.0",
-		"path-exists": "^3.0.0",
-		"pify": "^2.3.0",
-		"rimraf": "^3.0.2",
-		"xo": "*"
-	},
-	"ava": {
-		"require": [
-			"esm"
-		]
-	},
-	"xo": {
-		"rules": {
-			"promise/prefer-await-to-then": "off"
-		}
+		"file-type": "^16.5.3",
+		"fs-extra": "^10.0.0",
+		"jest": "^27.3.1"
 	}
 }
