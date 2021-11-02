@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 
+/.vscode
 /.editorconfig
 /.gitattributes
 /.travis.yml

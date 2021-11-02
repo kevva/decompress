@@ -9,7 +9,7 @@
 	"author": {
 		"name": "Kevin Mårtensson",
 		"email": "kevinmartensson@gmail.com",
-		"url": "github.com/kevva"
+		"url": "https://github.com/kevva"
 	},
 	"engines": {
 		"node": ">=4"
