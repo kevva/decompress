@@ -1,11 +1,10 @@
 import { dirname, join } from 'path';
-import { readFile, realpath, readlink, utimes, link, symlink, writeFile } from 'fs/promises';
+import { readFile, realpath, readlink, utimes, link, symlink, writeFile, mkdirs } from 'fs-extra';
 import decompressTar from 'decompress-tar';
 import decompressTarbz2 from 'decompress-tarbz2';
 import decompressTargz from 'decompress-targz';
 import decompressTarzst from '@xingrz/decompress-tarzst';
 import decompressUnzip from 'decompress-unzip';
-import makeDir from 'make-dir';
 import stripDirs from 'strip-dirs';
 
 export interface File {
@@ -58,8 +57,8 @@ async function safeMakeDir(dir: string, realOutputPath: string): Promise<string>
 		if (!realOutputPath.startsWith(realParentPath)) {
 			throw new Error('Refusing to create a directory outside the output path.');
 		}
-		const dirPath = await makeDir(dir);
-		return await realpath(dirPath);
+		await mkdirs(dir);
+		return await realpath(dir);
 	} catch (e) {
 		const parent = dirname(dir);
 		return safeMakeDir(parent, realOutputPath);
@@ -110,12 +109,12 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		const dest = join(output, x.path);
 		const now = new Date();
 
-		const outputPath = await makeDir(output);
-		let realOutputPath: string | null = await realpath(outputPath);
+		await mkdirs(output);
+		let realOutputPath: string | null = await realpath(output);
 
 		if (x.type === 'directory') {
 			await safeMakeDir(dest, realOutputPath);
-			await utimes(dest, now, x.mtime);
+			await utimes(dest, now, new Date(x.mtime));
 			return x;
 		}
 
@@ -144,7 +143,7 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		}
 
 		if (x.type === 'file') {
-			await utimes(dest, now, x.mtime);
+			await utimes(dest, now, new Date(x.mtime));
 		}
 
 		return x;
