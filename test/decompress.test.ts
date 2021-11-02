@@ -1,13 +1,13 @@
-const { readFile, stat, remove, pathExists, realpath, mkdtemp, ensureDir } = require('fs-extra');
-const { join } = require('path');
-const fileType = require('file-type');
-const m = require('..');
+import { readFile, stat, remove, pathExists, realpath, mkdtemp, ensureDir } from 'fs-extra';
+import { join } from 'path';
+import fileType from 'file-type';
+import m from '../src';
 
 const FIXTURES_DIR = join(__dirname, 'fixtures');
 const OUTPUT_DIR = join(__dirname, 'output');
 
-async function isJpg(buf) {
-	return (await fileType.fromBuffer(buf)).ext == 'jpg';
+async function isJpg(buf: Buffer): Promise<boolean> {
+	return (await fileType.fromBuffer(buf))?.ext == 'jpg';
 }
 
 beforeAll(async () => {

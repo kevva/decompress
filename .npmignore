@@ -6,8 +6,6 @@ node_modules
 /.travis.yml
 
 /src
-
-/fixtures
-/test.js
+/test
 
 /tsconfig.json
