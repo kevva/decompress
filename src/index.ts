@@ -52,32 +52,37 @@ async function runPlugins(input: Buffer, opts: DecompressOptions): Promise<File[
 }
 
 async function safeMakeDir(dir: string, realOutputPath: string): Promise<string> {
+	let realParentPath: string;
 	try {
-		const realParentPath = await realpath(dir);
-		if (!realOutputPath.startsWith(realParentPath)) {
-			throw new Error('Refusing to create a directory outside the output path.');
-		}
-		await mkdirs(dir);
-		return await realpath(dir);
+		realParentPath = await realpath(dir);
 	} catch (e) {
 		const parent = dirname(dir);
-		return safeMakeDir(parent, realOutputPath);
+		realParentPath = await safeMakeDir(parent, realOutputPath);
 	}
+
+	if (!realParentPath.startsWith(realOutputPath)) {
+		throw new Error('Refusing to create a directory outside the output path.');
+	}
+
+	await mkdirs(dir);
+	return await realpath(dir);
 }
 
-async function preventWritingThroughSymlink(destination: string, realOutputPath: string): Promise<string | null> {
+async function preventWritingThroughSymlink(destination: string): Promise<void> {
+	let symlinkPointsTo: string;
 	try {
-		if (await readlink(destination)) {
-			throw new Error('Refusing to write into a symlink');
-		}
-
-		// No symlink exists at `destination`, so we can continue
-		return realOutputPath;
+		symlinkPointsTo = await readlink(destination);
 	} catch (_) {
 		// Either no file exists, or it's not a symlink. In either case, this is
 		// not an escape we need to worry about in this phase.
-		return null;
+		return;
 	}
+
+	if (symlinkPointsTo) {
+		throw new Error('Refusing to write into a symlink');
+	}
+
+	// No symlink exists at `destination`, so we can continue
 }
 
 async function extractFile(input: Buffer, output: string | null, opts: DecompressOptions): Promise<File[]> {
@@ -110,7 +115,7 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		const now = new Date();
 
 		await mkdirs(output);
-		let realOutputPath: string | null = await realpath(output);
+		const realOutputPath = await realpath(output);
 
 		if (x.type === 'directory') {
 			await safeMakeDir(dest, realOutputPath);
@@ -122,11 +127,11 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		await safeMakeDir(dirname(dest), realOutputPath);
 
 		if (x.type === 'file') {
-			realOutputPath = await preventWritingThroughSymlink(dest, realOutputPath);
+			await preventWritingThroughSymlink(dest);
 		}
 
 		const realDestinationDir = await realpath(dirname(dest));
-		if (!realOutputPath || !realOutputPath.startsWith(realDestinationDir)) {
+		if (!realDestinationDir.startsWith(realOutputPath)) {
 			throw new Error('Refusing to write outside output directory: ' + realDestinationDir);
 		}
 
