@@ -5,12 +5,19 @@
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"license": "MIT",
-	"repository": "kevva/decompress",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/xingrz/decompress.git"
+	},
 	"author": {
 		"name": "Kevin Mårtensson",
 		"email": "kevinmartensson@gmail.com",
 		"url": "https://github.com/kevva"
 	},
+	"bugs": {
+		"url": "https://github.com/xingrz/decompress/issues"
+	},
+	"homepage": "https://github.com/xingrz/decompress#readme",
 	"engines": {
 		"node": ">=4"
 	},
