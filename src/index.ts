@@ -151,9 +151,14 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 	}));
 }
 
-export default async function decompress(input: string | Buffer, output: string | null = null, opts?: DecompressOptions): Promise<File[]> {
+export default async function decompress(input: string | Buffer, output?: string | null | DecompressOptions, opts?: DecompressOptions): Promise<File[]> {
 	if (typeof input !== 'string' && !Buffer.isBuffer(input)) {
 		throw new TypeError('Input file required');
+	}
+
+	if (typeof output == 'object') {
+		opts = output!;
+		output = null;
 	}
 
 	opts = {
@@ -169,5 +174,5 @@ export default async function decompress(input: string | Buffer, output: string 
 
 	const buf = typeof input === 'string' ? await readFile(input) : input;
 
-	return extractFile(buf, output, opts);
+	return extractFile(buf, output || null, opts);
 }
