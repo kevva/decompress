@@ -1,6 +1,6 @@
 {
 	"name": "@xingrz/decompress",
-	"version": "5.0.0-alpha.0",
+	"version": "5.0.0-alpha.1",
 	"description": "Extracting archives made easy",
 	"main": "lib/index.js",
 	"license": "MIT",
