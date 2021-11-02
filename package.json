@@ -3,6 +3,7 @@
 	"version": "5.0.0-alpha.1",
 	"description": "Extracting archives made easy",
 	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
 	"license": "MIT",
 	"repository": "kevva/decompress",
 	"author": {
