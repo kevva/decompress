@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"build": "tsc -p .",
-		"test": "xo && ava",
+		"test": "jest",
 		"prepublishOnly": "rm -rf lib && npm run build"
 	},
 	"keywords": [
@@ -42,22 +42,9 @@
 	},
 	"devDependencies": {
 		"@types/decompress": "^4.2.4",
-		"ava": "*",
-		"esm": "^3.2.25",
-		"is-jpg": "^1.0.0",
-		"path-exists": "^3.0.0",
-		"rimraf": "^3.0.2",
-		"typescript": "^4.4.4",
-		"xo": "*"
-	},
-	"ava": {
-		"require": [
-			"esm"
-		]
-	},
-	"xo": {
-		"rules": {
-			"promise/prefer-await-to-then": "off"
-		}
+		"file-type": "^16.5.3",
+		"fs-extra": "^10.0.0",
+		"jest": "^27.3.1",
+		"typescript": "^4.4.4"
 	}
 }
