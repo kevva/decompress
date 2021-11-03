@@ -4,9 +4,10 @@ node_modules
 /.vscode
 /.editorconfig
 /.gitattributes
-/.travis.yml
+/.github
 
 /src
 /test
+/jest.config.js
 
 /tsconfig.json
