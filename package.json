@@ -1,6 +1,6 @@
 {
 	"name": "@xingrz/decompress",
-	"version": "5.0.0-alpha.6",
+	"version": "5.0.0-alpha.7",
 	"description": "Extracting archives made easy",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
