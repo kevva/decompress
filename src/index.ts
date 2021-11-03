@@ -110,7 +110,10 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		return files;
 	}
 
-	return Promise.all(files.map(async x => {
+	// Creation of hard links should be deferred until all files are wrote
+	const links: File[] = [];
+
+	await Promise.all(files.map(async x => {
 		const dest = join(output, x.path);
 		const now = new Date();
 
@@ -120,7 +123,7 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		if (x.type === 'directory') {
 			await safeMakeDir(dest, realOutputPath);
 			await utimes(dest, now, new Date(x.mtime));
-			return x;
+			return;
 		}
 
 		// Attempt to ensure parent directory exists (failing if it's outside the output dir)
@@ -136,10 +139,10 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		}
 
 		if (x.type === 'link') {
-			await link(x.linkname!, dest);
+			links.push(x);
 		} else if (x.type === 'symlink') {
 			if (process.platform === 'win32') {
-				await link(x.linkname!, dest);
+				links.push(x);
 			} else {
 				await symlink(x.linkname!, dest);
 			}
@@ -150,9 +153,14 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 		if (x.type === 'file') {
 			await utimes(dest, now, new Date(x.mtime));
 		}
-
-		return x;
 	}));
+
+	await Promise.all(links.map(async x => {
+		const dest = join(output, x.path);
+		await link(join(output, x.linkname!), dest);
+	}));
+
+	return files;
 }
 
 export default async function decompress(input: string | Buffer, output?: string | null | DecompressOptions, opts?: DecompressOptions): Promise<File[]> {
