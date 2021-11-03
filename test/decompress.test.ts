@@ -79,6 +79,19 @@ test('extract symlink', async () => {
 	expect(await realpath(join(dist, 'symlink'))).toBe(join(dist, 'file.txt'));
 });
 
+test('extract hardlink', async () => {
+	const dist = await createTempDir();
+	await m(join(FIXTURES_DIR, 'hardlink.tar'), dist);
+
+	const sourceBuf = await readFile(join(dist, 'source'));
+	const sourceStat = await stat(join(dist, 'source'));
+	const linkBuf = await readFile(join(dist, 'hard_link'));
+	const linkStat = await stat(join(dist, 'hard_link'));
+
+	expect(sourceBuf).toEqual(linkBuf);
+	expect(sourceStat.ino).toBe(linkStat.ino);
+});
+
 test('extract directory', async () => {
 	const dist = await createTempDir();
 	await m(join(FIXTURES_DIR, 'directory.tar'), dist);
