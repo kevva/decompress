@@ -1,22 +1,12 @@
+import type { DecompressPlugin, File } from '@xingrz/decompress-types';
 import { dirname, join } from 'path';
 import { readFile, realpath, readlink, utimes, link, symlink, writeFile, mkdirs } from 'fs-extra';
 import decompressTar from '@xingrz/decompress-tar';
+import decompressTarzst from '@xingrz/decompress-tarzst';
 import decompressTarbz2 from 'decompress-tarbz2';
 import decompressTargz from 'decompress-targz';
-import decompressTarzst from '@xingrz/decompress-tarzst';
 import decompressUnzip from 'decompress-unzip';
 import stripDirs from 'strip-dirs';
-
-export interface File {
-	data: Buffer;
-	mode: number;
-	mtime: Date | string;
-	path: string;
-	type: string;
-	linkname?: string;
-}
-
-export type DecompressPlugin = (input: Buffer, opts?: DecompressOptions) => Promise<File[]>;
 
 export interface DecompressOptions {
 	/**
@@ -33,7 +23,7 @@ export interface DecompressOptions {
 	 * Array of plugins to use.
 	 * Default: [decompressTar(), decompressTarbz2(), decompressTargz(), decompressUnzip()]
 	 */
-	plugins?: DecompressPlugin[];
+	plugins?: DecompressPlugin<any>[];
 
 	/**
 	 * Remove leading directory components from extracted files.

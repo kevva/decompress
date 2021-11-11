@@ -1,4 +1,4 @@
 declare module 'decompress-targz' {
-	import { File } from 'decompress';
-	export default function decompressTargz(): (input: Buffer, opts?: any) => Promise<File[]>;
+	import type { DecompressPlugin } from '@xingrz/decompress-types';
+	export default function decompressTargz(): DecompressPlugin<void>;
 }

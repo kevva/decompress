@@ -1,4 +1,4 @@
 declare module 'decompress-unzip' {
-	import { File } from 'decompress';
-	export default function decompressUnzip(): (input: Buffer, opts?: any) => Promise<File[]>;
+	import type { DecompressPlugin } from '@xingrz/decompress-types';
+	export default function decompressUnzip(): DecompressPlugin<void>;
 }
