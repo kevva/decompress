@@ -1,14 +1,20 @@
-import type { DecompressPlugin, File } from '@xingrz/decompress-types';
+import type { DecompressPlugin, DecompressPluginOptions, File } from '@xingrz/decompress-types';
 import { dirname, join } from 'path';
+import { Readable } from 'stream';
+import { createWriteStream } from 'fs';
 import { readFile, realpath, readlink, utimes, link, symlink, writeFile, mkdirs } from 'fs-extra';
 import decompressTar from '@xingrz/decompress-tar';
 import decompressTarzst from '@xingrz/decompress-tarzst';
 import decompressTarbz2 from 'decompress-tarbz2';
 import decompressTargz from 'decompress-targz';
 import decompressUnzip from 'decompress-unzip';
+import { pipeline as _pipeline } from 'stream';
+import { promisify } from 'util';
 import stripDirs from 'strip-dirs';
 
-export interface DecompressOptions {
+const pipeline = promisify(_pipeline);
+
+export interface DecompressOptions extends DecompressPluginOptions {
 	/**
 	 * Filter out files before extracting
 	 */
@@ -76,26 +82,36 @@ async function preventWritingThroughSymlink(destination: string): Promise<void> 
 	// No symlink exists at `destination`, so we can continue
 }
 
-async function extractFile(input: Buffer, output: string | null, opts: DecompressOptions): Promise<File[]> {
-	let files = await runPlugins(input, opts);
+function applyFileMappers(file: File, opts: DecompressOptions): boolean {
+	const { strip, filter, map } = opts;
 
-	const { strip } = opts;
 	if (typeof strip === 'number' && strip > 0) {
-		files = files
-			.map(x => {
-				x.path = stripDirs(x.path, strip);
-				return x;
-			})
-			.filter(x => x.path !== '.');
+		file = Object.assign(file, { path: stripDirs(file.path, strip) });
+		if (file.path === '.') {
+			return false;
+		}
 	}
 
-	if (typeof opts.filter === 'function') {
-		files = files.filter(opts.filter);
+	if (typeof filter === 'function') {
+		if (!filter(file)) {
+			return false;
+		}
 	}
 
-	if (typeof opts.map === 'function') {
-		files = files.map(opts.map);
+	if (typeof map === 'function') {
+		file = map(file);
 	}
+
+	return true;
+}
+
+async function extractFile(input: Buffer, output: string | null, opts: DecompressOptions): Promise<File[]> {
+	if (output) {
+		opts.fileWriter = (file, input) => outputFile(file, input, output, opts);
+	}
+
+	const files = (await runPlugins(input, opts))
+		.filter(file => applyFileMappers(file, opts));
 
 	if (!output) {
 		return files;
@@ -137,11 +153,8 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 			} else {
 				await symlink(x.linkname!, dest);
 			}
-		} else {
+		} else if (x.type === 'file' && x.data) {
 			await writeFile(dest, x.data, { mode: x.mode })
-		}
-
-		if (x.type === 'file') {
 			await utimes(dest, now, new Date(x.mtime));
 		}
 	}));
@@ -152,6 +165,34 @@ async function extractFile(input: Buffer, output: string | null, opts: Decompres
 	}));
 
 	return files;
+}
+
+async function outputFile(file: File, input: Readable, output: string, opts: DecompressOptions): Promise<void> {
+	file = { ...file };
+
+	if (!applyFileMappers(file, opts)) {
+		input.resume();
+		return;
+	}
+
+	const dest = join(output, file.path);
+	const now = new Date();
+
+	await mkdirs(output);
+	const realOutputPath = await realpath(output);
+
+	// Attempt to ensure parent directory exists (failing if it's outside the output dir)
+	await safeMakeDir(dirname(dest), realOutputPath);
+
+	await preventWritingThroughSymlink(dest);
+
+	const realDestinationDir = await realpath(dirname(dest));
+	if (!realDestinationDir.startsWith(realOutputPath)) {
+		throw new Error('Refusing to write outside output directory: ' + realDestinationDir);
+	}
+
+	await pipeline(input, createWriteStream(dest, { mode: file.mode }));
+	await utimes(dest, now, new Date(file.mtime));
 }
 
 export default async function decompress(input: string | Buffer, output?: string | null | DecompressOptions, opts?: DecompressOptions): Promise<File[]> {

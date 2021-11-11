@@ -33,15 +33,15 @@ test('extract file', async () => {
 	const zipFiles = await m(join(FIXTURES_DIR, 'file.zip'));
 
 	expect(tarFiles[0].path).toBe('test.jpg');
-	expect(await isJpg(tarFiles[0].data)).toBe(true);
+	expect(tarFiles[0].data && await isJpg(tarFiles[0].data)).toBe(true);
 	expect(tarbzFiles[0].path).toBe('test.jpg');
-	expect(await isJpg(tarbzFiles[0].data)).toBe(true);
+	expect(tarbzFiles[0].data && await isJpg(tarbzFiles[0].data)).toBe(true);
 	expect(targzFiles[0].path).toBe('test.jpg');
-	expect(await isJpg(targzFiles[0].data)).toBe(true);
+	expect(targzFiles[0].data && await isJpg(targzFiles[0].data)).toBe(true);
 	expect(tarzstFiles[0].path).toBe('test.jpg');
-	expect(await isJpg(tarzstFiles[0].data)).toBe(true);
+	expect(tarzstFiles[0].data && await isJpg(tarzstFiles[0].data)).toBe(true);
 	expect(zipFiles[0].path).toBe('test.jpg');
-	expect(await isJpg(zipFiles[0].data)).toBe(true);
+	expect(zipFiles[0].data && await isJpg(zipFiles[0].data)).toBe(true);
 });
 
 test('extract file using buffer', async () => {
@@ -69,8 +69,9 @@ test('extract file to directory', async () => {
 	const files = await m(join(FIXTURES_DIR, 'file.tar'), dist);
 
 	expect(files[0].path).toBe('test.jpg');
-	expect(await isJpg(files[0].data)).toBe(true);
+	expect(files[0].data).toBeUndefined();
 	expect(await pathExists(join(dist, 'test.jpg'))).toBe(true);
+	expect(await isJpg(await readFile(join(dist, 'test.jpg')))).toBe(true);
 });
 
 test('extract symlink', async () => {
@@ -103,9 +104,9 @@ test('strip option', async () => {
 	const tarFiles = await m(join(FIXTURES_DIR, 'strip.tar'), { strip: 1 });
 
 	expect(zipFiles[0].path).toBe('test-strip.jpg');
-	expect(await isJpg(zipFiles[0].data)).toBe(true);
+	expect(zipFiles[0].data && await isJpg(zipFiles[0].data)).toBe(true);
 	expect(tarFiles[0].path).toBe('test-strip.jpg');
-	expect(await isJpg(tarFiles[0].data)).toBe(true);
+	expect(tarFiles[0].data && await isJpg(tarFiles[0].data)).toBe(true);
 });
 
 test('filter option', async () => {
