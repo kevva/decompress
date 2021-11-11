@@ -10,7 +10,7 @@ import stripDirs from 'strip-dirs';
 export interface File {
 	data: Buffer;
 	mode: number;
-	mtime: string;
+	mtime: Date | string;
 	path: string;
 	type: string;
 	linkname?: string;
