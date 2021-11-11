@@ -1,6 +1,6 @@
 import { dirname, join } from 'path';
 import { readFile, realpath, readlink, utimes, link, symlink, writeFile, mkdirs } from 'fs-extra';
-import decompressTar from 'decompress-tar';
+import decompressTar from '@xingrz/decompress-tar';
 import decompressTarbz2 from 'decompress-tarbz2';
 import decompressTargz from 'decompress-targz';
 import decompressTarzst from '@xingrz/decompress-tarzst';
@@ -28,6 +28,7 @@ export interface DecompressOptions {
 	 * Map files before extracting
 	 */
 	map?(file: File): File;
+
 	/**
 	 * Array of plugins to use.
 	 * Default: [decompressTar(), decompressTarbz2(), decompressTargz(), decompressUnzip()]
