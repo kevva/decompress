@@ -50,7 +50,6 @@
 		"strip-dirs": "^2.0.0"
 	},
 	"devDependencies": {
-		"@types/decompress": "^4.2.4",
 		"@types/fs-extra": "^9.0.13",
 		"@types/jest": "^27.0.2",
 		"@types/node": "^16.11.6",
