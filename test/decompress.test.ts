@@ -57,10 +57,15 @@ test('extract file using buffer', async () => {
 	const zipFiles = await m(zipBuf);
 
 	expect(tarFiles[0].path).toBe('test.jpg');
+	expect(tarFiles[0].data && await isJpg(tarFiles[0].data)).toBe(true);
 	expect(tarbzFiles[0].path).toBe('test.jpg');
+	expect(tarbzFiles[0].data && await isJpg(tarbzFiles[0].data)).toBe(true);
 	expect(targzFiles[0].path).toBe('test.jpg');
+	expect(targzFiles[0].data && await isJpg(targzFiles[0].data)).toBe(true);
 	expect(tarzstFiles[0].path).toBe('test.jpg');
+	expect(tarzstFiles[0].data && await isJpg(tarzstFiles[0].data)).toBe(true);
 	expect(zipFiles[0].path).toBe('test.jpg');
+	expect(zipFiles[0].data && await isJpg(zipFiles[0].data)).toBe(true);
 });
 
 test('extract file to directory', async () => {
