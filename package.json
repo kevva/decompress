@@ -39,12 +39,12 @@
 		"unzip"
 	],
 	"dependencies": {
-		"@xingrz/decompress-tar": "^5.1.0-alpha.1",
-		"@xingrz/decompress-tarzst": "^5.1.0-alpha.1",
-		"@xingrz/decompress-types": "^5.1.0-alpha.0",
-		"decompress-tarbz2": "^4.0.0",
-		"decompress-targz": "^4.0.0",
-		"decompress-unzip": "^4.0.1",
+		"@xingrz/decompress-tar": "^5.2.0-alpha.0",
+		"@xingrz/decompress-tarbz2": "^5.2.0-alpha.0",
+		"@xingrz/decompress-targz": "^5.2.0-alpha.0",
+		"@xingrz/decompress-tarzst": "^5.2.0-alpha.0",
+		"@xingrz/decompress-types": "^5.2.0-alpha.0",
+		"@xingrz/decompress-unzip": "^5.2.0-alpha.0",
 		"fs-extra": "^10.0.0",
 		"make-dir": "^3.1.0",
 		"strip-dirs": "^2.0.0"

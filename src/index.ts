@@ -4,10 +4,10 @@ import { Readable } from 'stream';
 import { createWriteStream } from 'fs';
 import { readFile, realpath, readlink, utimes, link, symlink, writeFile, mkdirs } from 'fs-extra';
 import decompressTar from '@xingrz/decompress-tar';
+import decompressTarbz2 from '@xingrz/decompress-tarbz2';
+import decompressTargz from '@xingrz/decompress-targz';
 import decompressTarzst from '@xingrz/decompress-tarzst';
-import decompressTarbz2 from 'decompress-tarbz2';
-import decompressTargz from 'decompress-targz';
-import decompressUnzip from 'decompress-unzip';
+import decompressUnzip from '@xingrz/decompress-unzip';
 import { pipeline as _pipeline } from 'stream';
 import { promisify } from 'util';
 import stripDirs from 'strip-dirs';
@@ -107,71 +107,16 @@ function applyFileMappers(file: File, opts: DecompressOptions): boolean {
 
 async function extractFile(input: Buffer, output: string | null, opts: DecompressOptions): Promise<File[]> {
 	if (output) {
-		opts.fileWriter = (file, input) => outputFile(file, input, output, opts);
+		opts.fileWriter = (file, input) => outputFile({ ...file }, input, output, opts);
 	}
 
-	const files = (await runPlugins(input, opts))
-		.filter(file => applyFileMappers(file, opts));
-
-	if (!output) {
-		return files;
-	}
-
-	// Creation of hard links should be deferred until all files are wrote
-	const links: File[] = [];
-
-	await Promise.all(files.map(async x => {
-		const dest = join(output, x.path);
-		const now = new Date();
-
-		await mkdirs(output);
-		const realOutputPath = await realpath(output);
-
-		if (x.type === 'directory') {
-			await safeMakeDir(dest, realOutputPath);
-			await utimes(dest, now, new Date(x.mtime));
-			return;
-		}
-
-		// Attempt to ensure parent directory exists (failing if it's outside the output dir)
-		await safeMakeDir(dirname(dest), realOutputPath);
-
-		if (x.type === 'file') {
-			await preventWritingThroughSymlink(dest);
-		}
-
-		const realDestinationDir = await realpath(dirname(dest));
-		if (!realDestinationDir.startsWith(realOutputPath)) {
-			throw new Error('Refusing to write outside output directory: ' + realDestinationDir);
-		}
-
-		if (x.type === 'link') {
-			links.push(x);
-		} else if (x.type === 'symlink') {
-			if (process.platform === 'win32') {
-				links.push(x);
-			} else {
-				await symlink(x.linkname!, dest);
-			}
-		} else if (x.type === 'file' && x.data) {
-			await writeFile(dest, x.data, { mode: x.mode })
-			await utimes(dest, now, new Date(x.mtime));
-		}
-	}));
-
-	await Promise.all(links.map(async x => {
-		const dest = join(output, x.path);
-		await link(join(output, x.linkname!), dest);
-	}));
-
-	return files;
+	const files = await runPlugins(input, opts)
+	return files.filter(file => applyFileMappers(file, opts));
 }
 
-async function outputFile(file: File, input: Readable, output: string, opts: DecompressOptions): Promise<void> {
-	file = { ...file };
-
+async function outputFile(file: File, input: Readable | undefined, output: string, opts: DecompressOptions): Promise<void> {
 	if (!applyFileMappers(file, opts)) {
-		input.resume();
+		input?.resume();
 		return;
 	}
 
@@ -181,18 +126,36 @@ async function outputFile(file: File, input: Readable, output: string, opts: Dec
 	await mkdirs(output);
 	const realOutputPath = await realpath(output);
 
+	if (file.type === 'directory') {
+		await safeMakeDir(dest, realOutputPath);
+		await utimes(dest, now, new Date(file.mtime));
+		return;
+	}
+
 	// Attempt to ensure parent directory exists (failing if it's outside the output dir)
 	await safeMakeDir(dirname(dest), realOutputPath);
 
-	await preventWritingThroughSymlink(dest);
+	if (file.type === 'file') {
+		await preventWritingThroughSymlink(dest);
+	}
 
 	const realDestinationDir = await realpath(dirname(dest));
 	if (!realDestinationDir.startsWith(realOutputPath)) {
 		throw new Error('Refusing to write outside output directory: ' + realDestinationDir);
 	}
 
-	await pipeline(input, createWriteStream(dest, { mode: file.mode }));
-	await utimes(dest, now, new Date(file.mtime));
+	if (file.type === 'link') {
+		await link(join(output, file.linkname!), dest);
+	} else if (file.type === 'symlink') {
+		if (process.platform === 'win32') {
+			await link(join(output, file.linkname!), dest);
+		} else {
+			await symlink(file.linkname!, dest);
+		}
+	} else if (file.type === 'file' && input) {
+		await pipeline(input, createWriteStream(dest, { mode: file.mode }));
+		await utimes(dest, now, new Date(file.mtime));
+	}
 }
 
 export default async function decompress(input: string | Buffer, output?: string | null | DecompressOptions, opts?: DecompressOptions): Promise<File[]> {
