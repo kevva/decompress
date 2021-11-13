@@ -3,14 +3,41 @@
 
 [![][npm-version]][npm-url] [![][npm-downloads]][npm-url] [![license][license-img]][license-url] [![issues][issues-img]][issues-url] [![stars][stars-img]][stars-url] [![commits][commits-img]][commits-url]
 
-Extracting archives made easy
+Extracting archives made easy.
 
-*See [decompress-cli](https://github.com/kevva/decompress-cli) for the command-line version.*
+## Plugins
+
+| package                                 | version         | format      |
+| --------------------------------------- | --------------- | ----------- |
+| [@xingrz/decompress-tar][tar-url]       | ![][tar-img]    | `*.tar`     |
+| [@xingrz/decompress-tarbz2][tarbz2-url] | ![][tarbz2-img] | `*.tar.bz2` |
+| [@xingrz/decompress-targz][targz-url]   | ![][targz-img]  | `*.tar.gz`  |
+| [@xingrz/decompress-tarzst][tarzst-url] | ![][tarzst-img] | `*.tar.zst` |
+| [@xingrz/decompress-unzip][unzip-url]   | ![][unzip-img]  | `*.zip`     |
+
+[tar-url]: https://github.com/xingrz/decompress-tar
+[tar-img]: https://img.shields.io/npm/dependency-version/@xingrz/decompress/@xingrz/decompress-tar?label=npm&style=flat-square
+
+[tarbz2-url]: https://github.com/xingrz/decompress-tarbz2
+[tarbz2-img]: https://img.shields.io/npm/dependency-version/@xingrz/decompress/@xingrz/decompress-tarbz2?label=npm&style=flat-square
+
+[targz-url]: https://github.com/xingrz/decompress-targz
+[targz-img]: https://img.shields.io/npm/dependency-version/@xingrz/decompress/@xingrz/decompress-targz?label=npm&style=flat-square
+
+[tarzst-url]: https://github.com/xingrz/decompress-tarzst
+[tarzst-img]: https://img.shields.io/npm/dependency-version/@xingrz/decompress/@xingrz/decompress-tarzst?label=npm&style=flat-square
+
+[unzip-url]: https://github.com/xingrz/decompress-unzip
+[unzip-img]: https://img.shields.io/npm/dependency-version/@xingrz/decompress/@xingrz/decompress-unzip?label=npm&style=flat-square
+
+#### Plugin API
+
+[![](https://img.shields.io/npm/dependency-version/@xingrz/decompress/@xingrz/decompress-types?style=flat-square)](https://github.com/xingrz/decompress-types)
 
 ## Install
 
 ```sh
-$ npm install @xingrz/decompress --save
+npm install --save @xingrz/decompress
 ```
 
 ## Usage
@@ -24,37 +51,39 @@ console.log('done!');
 
 ## API
 
-### decompress(input[, output][, options])
+### `decompress(input[, output][, options])`
 
-Returns a Promise for an array of files in the following format:
+Returns a Promise for an array of [`File`](https://github.com/xingrz/decompress-types/blob/master/index.d.ts#L3)s in the following format:
 
-```js
-{
-	data: Buffer,
-	mode: Number,
-	mtime: String,
-	path: String,
-	type: String
+```ts
+interface File {
+	path: string;
+	type: 'file' | 'link' | 'symlink' | 'directory';
+	mode: number;
+	mtime: Date | string;
+	data?: Buffer;
 }
 ```
 
-#### input
+If `output` is not presented, `data` will be populated with the content of the file. Otherwise the file will be written to disk and the `data` will be undefined.
 
-Type: `string` `Buffer`
+#### `input`
 
-File to decompress.
+Type: `string` | `Buffer`
 
-#### output
+Path of file or `Buffer` to decompress.
 
-Type: `string`
+#### `output`
 
-Output directory.
+Type: `string` (optional)
 
-#### options
+Path to output directory.
 
-##### filter
+#### `options`
 
-Type: `Function`
+##### `filter`
+
+Type: `(file: File) => boolean`
 
 Filter out files before extracting. E.g:
 
@@ -67,9 +96,9 @@ console.log('done!');
 
 *Note that in the current implementation, **`filter` is only applied after fully reading all files from the archive in memory**. Do not rely on this option to limit the amount of memory used by `decompress` to the size of the files included by `filter`. `decompress` will read the entire compressed file into memory regardless.*
 
-##### map
+##### `map`
 
-Type: `Function`
+Type: `(file: File) => File`
 
 Map files before extracting: E.g:
 
@@ -83,17 +112,15 @@ const files = await decompress('unicorn.zip', 'dist', {
 console.log('done!');
 ```
 
-##### plugins
+##### `plugins`
 
-Type: `Array`<br>
-Default: `[decompressTar(), decompressTarbz2(), decompressTargz(), decompressTarzst(), decompressUnzip()]`
+Type: `DecompressPlugin[]`
 
-Array of [plugins](https://www.npmjs.com/browse/keyword/decompressplugin) to use.
+Array of [plugins](#plugins) to use. See [@xingrz/decompress-types](https://github.com/xingrz/decompress-types/blob/master/index.d.ts) for full definitions.
 
-##### strip
+##### `strip`
 
-Type: `number`<br>
-Default: `0`
+Type: `number` (default: `0`)
 
 Remove leading directory components from extracted files.
 
