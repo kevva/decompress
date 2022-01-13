@@ -1,72 +1,71 @@
-'use strict';
-const path = require('path');
-const fs = require('graceful-fs');
-const decompressTar = require('decompress-tar');
-const decompressTarbz2 = require('decompress-tarbz2');
-const decompressTargz = require('decompress-targz');
-const decompressUnzip = require('decompress-unzip');
-const makeDir = require('make-dir');
-const pify = require('pify');
-const stripDirs = require('strip-dirs');
+import {Buffer} from 'node:buffer';
+import path from 'node:path';
+import process from 'node:process';
+import decompressTar from 'decompress-tar';
+import decompressTarbz2 from 'decompress-tarbz2';
+import decompressTargz from 'decompress-targz';
+import decompressUnzip from 'decompress-unzip';
+import fs from 'graceful-fs';
+import makeDir from 'make-dir';
+import pify from 'pify';
+import stripDirs from 'strip-dirs';
 
 const fsP = pify(fs);
 
-const runPlugins = (input, opts) => {
-	if (opts.plugins.length === 0) {
+const runPlugins = (input, options) => {
+	if (options.plugins.length === 0) {
 		return Promise.resolve([]);
 	}
 
-	return Promise.all(opts.plugins.map(x => x(input, opts))).then(files => files.reduce((a, b) => a.concat(b)));
+	return Promise.all(options.plugins.map(x => x(input, options)))
+		// eslint-disable-next-line unicorn/no-array-reduce, unicorn/prefer-spread
+		.then(files => files.reduce((a, b) => a.concat(b)));
 };
 
-const safeMakeDir = (dir, realOutputPath) => {
-	return fsP.realpath(dir)
-		.catch(_ => {
-			const parent = path.dirname(dir);
-			return safeMakeDir(parent, realOutputPath);
-		})
-		.then(realParentPath => {
-			if (realParentPath.indexOf(realOutputPath) !== 0) {
-				throw (new Error('Refusing to create a directory outside the output path.'));
-			}
+const safeMakeDir = (dir, realOutputPath) => fsP.realpath(dir)
+	.catch(_ => {
+		const parent = path.dirname(dir);
+		return safeMakeDir(parent, realOutputPath);
+	})
+	.then(realParentPath => {
+		if (realParentPath.indexOf(realOutputPath) !== 0) {
+			throw new Error('Refusing to create a directory outside the output path.');
+		}
 
-			return makeDir(dir).then(fsP.realpath);
-		});
-};
+		return makeDir(dir).then(fsP.realpath);
+	});
 
-const preventWritingThroughSymlink = (destination, realOutputPath) => {
-	return fsP.readlink(destination)
-		.catch(_ => {
-			// Either no file exists, or it's not a symlink. In either case, this is
-			// not an escape we need to worry about in this phase.
-			return null;
-		})
-		.then(symlinkPointsTo => {
-			if (symlinkPointsTo) {
-				throw new Error('Refusing to write into a symlink');
-			}
+const preventWritingThroughSymlink = (destination, realOutputPath) => fsP.readlink(destination)
+	// Either no file exists, or it's not a symlink. In either case, this is
+	// not an escape we need to worry about in this phase.
+	.catch(_ => null)
+	.then(symlinkPointsTo => {
+		if (symlinkPointsTo) {
+			throw new Error('Refusing to write into a symlink');
+		}
 
-			// No symlink exists at `destination`, so we can continue
-			return realOutputPath;
-		});
-};
+		// No symlink exists at `destination`, so we can continue
+		return realOutputPath;
+	});
 
-const extractFile = (input, output, opts) => runPlugins(input, opts).then(files => {
-	if (opts.strip > 0) {
+const extractFile = (input, output, options) => runPlugins(input, options).then(files => {
+	if (options.strip > 0) {
 		files = files
 			.map(x => {
-				x.path = stripDirs(x.path, opts.strip);
+				x.path = stripDirs(x.path, options.strip);
 				return x;
 			})
 			.filter(x => x.path !== '.');
 	}
 
-	if (typeof opts.filter === 'function') {
-		files = files.filter(opts.filter);
+	if (typeof options.filter === 'function') {
+		// eslint-disable-next-line unicorn/no-array-callback-reference
+		files = files.filter(options.filter);
 	}
 
-	if (typeof opts.map === 'function') {
-		files = files.map(opts.map);
+	if (typeof options.map === 'function') {
+		// eslint-disable-next-line unicorn/no-array-callback-reference
+		files = files.map(options.map);
 	}
 
 	if (!output) {
@@ -75,7 +74,7 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 	return Promise.all(files.map(x => {
 		const dest = path.join(output, x.path);
-		const mode = x.mode & ~process.umask();
+		const mode = x.mode & ~process.umask(); // eslint-disable-line no-bitwise
 		const now = new Date();
 
 		if (x.type === 'directory') {
@@ -88,11 +87,10 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 		return makeDir(output)
 			.then(outputPath => fsP.realpath(outputPath))
-			.then(realOutputPath => {
+			.then(realOutputPath =>
 				// Attempt to ensure parent directory exists (failing if it's outside the output dir)
-				return safeMakeDir(path.dirname(dest), realOutputPath)
-					.then(() => realOutputPath);
-			})
+				safeMakeDir(path.dirname(dest), realOutputPath).then(() => realOutputPath),
+			)
 			.then(realOutputPath => {
 				if (x.type === 'file') {
 					return preventWritingThroughSymlink(dest, realOutputPath);
@@ -100,14 +98,12 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 
 				return realOutputPath;
 			})
-			.then(realOutputPath => {
-				return fsP.realpath(path.dirname(dest))
-					.then(realDestinationDir => {
-						if (realDestinationDir.indexOf(realOutputPath) !== 0) {
-							throw (new Error('Refusing to write outside output directory: ' + realDestinationDir));
-						}
-					});
-			})
+			.then(realOutputPath => fsP.realpath(path.dirname(dest))
+				.then(realDestinationDir => {
+					if (realDestinationDir.indexOf(realOutputPath) !== 0) {
+						throw new Error(`Refusing to write outside output directory: ${realDestinationDir}`);
+					}
+				}))
 			.then(() => {
 				if (x.type === 'link') {
 					return fsP.link(x.linkname, dest);
@@ -128,24 +124,29 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files 
 	}));
 });
 
-module.exports = (input, output, opts) => {
+const decompress = (input, output, options) => {
 	if (typeof input !== 'string' && !Buffer.isBuffer(input)) {
 		return Promise.reject(new TypeError('Input file required'));
 	}
 
 	if (typeof output === 'object') {
-		opts = output;
+		options = output;
 		output = null;
 	}
 
-	opts = Object.assign({plugins: [
-		decompressTar(),
-		decompressTarbz2(),
-		decompressTargz(),
-		decompressUnzip()
-	]}, opts);
+	options = {
+		plugins: [
+			decompressTar(),
+			decompressTarbz2(),
+			decompressTargz(),
+			decompressUnzip(),
+		],
+		...options,
+	};
 
 	const read = typeof input === 'string' ? fsP.readFile(input) : Promise.resolve(input);
 
-	return read.then(buf => extractFile(buf, output, opts));
+	return read.then(buf => extractFile(buf, output, options));
 };
+
+export default decompress;
