@@ -1,4 +1,4 @@
-# decompress [![Build Status](https://travis-ci.org/kevva/decompress.svg?branch=master)](https://travis-ci.org/kevva/decompress)
+# decompress [![CI](https://github.com/kevva/decompress/actions/workflows/ci.yml/badge.svg)](https://github.com/kevva/decompress/actions/workflows/ci.yml)
 
 > Extracting archives made easy
 
@@ -6,15 +6,15 @@
 
 ## Install
 
-```
-$ npm install decompress
+```sh
+npm install decompress
 ```
 
 
 ## Usage
 
 ```js
-const decompress = require('decompress');
+import decompress from 'decompress';
 
 decompress('unicorn.zip', 'dist').then(files => {
 	console.log('done!');
@@ -87,15 +87,15 @@ decompress('unicorn.zip', 'dist', {
 
 ##### plugins
 
-Type: `Array`<br>
-Default: `[decompressTar(), decompressTarbz2(), decompressTargz(), decompressUnzip()]`
+* Type: `Array`
+* Default: `[decompressTar(), decompressTarbz2(), decompressTargz(), decompressUnzip()]`
 
 Array of [plugins](https://www.npmjs.com/browse/keyword/decompressplugin) to use.
 
 ##### strip
 
-Type: `number`<br>
-Default: `0`
+* Type: `number`
+* Default: `0`
 
 Remove leading directory components from extracted files.
 

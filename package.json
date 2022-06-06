@@ -10,10 +10,18 @@
 		"url": "github.com/kevva"
 	},
 	"engines": {
-		"node": ">=4"
+		"node": "^12.20.0 || ^14.14.0 || >=16.0.0"
 	},
 	"scripts": {
-		"test": "xo && ava"
+		"ava": "ava",
+		"xo": "xo",
+		"test": "npm run xo && npm run ava",
+		"test-ci": "npm run xo && c8 ava"
+	},
+	"main": "index.js",
+	"type": "module",
+	"exports": {
+		".": "./index.js"
 	},
 	"files": [
 		"index.js"
@@ -30,32 +38,21 @@
 		"unzip"
 	],
 	"dependencies": {
-		"decompress-tar": "^4.0.0",
-		"decompress-tarbz2": "^4.0.0",
-		"decompress-targz": "^4.0.0",
+		"decompress-tar": "^4.1.1",
+		"decompress-tarbz2": "^4.1.1",
+		"decompress-targz": "^4.1.1",
 		"decompress-unzip": "^4.0.1",
-		"graceful-fs": "^4.1.10",
-		"make-dir": "^1.0.0",
-		"pify": "^2.3.0",
-		"strip-dirs": "^2.0.0"
+		"graceful-fs": "^4.2.10",
+		"make-dir": "^3.1.0",
+		"pify": "^5.0.0",
+		"strip-dirs": "^3.0.0"
 	},
 	"devDependencies": {
-		"ava": "*",
-		"esm": "^3.2.25",
-		"is-jpg": "^1.0.0",
-		"path-exists": "^3.0.0",
-		"pify": "^2.3.0",
+		"ava": "^4.3.0",
+		"c8": "^7.11.3",
+		"is-jpg": "^3.0.0",
+		"path-exists": "^5.0.0",
 		"rimraf": "^3.0.2",
-		"xo": "*"
-	},
-	"ava": {
-		"require": [
-			"esm"
-		]
-	},
-	"xo": {
-		"rules": {
-			"promise/prefer-await-to-then": "off"
-		}
+		"xo": "^0.49.0"
 	}
 }
